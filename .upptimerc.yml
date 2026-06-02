@@ -1,0 +1,28 @@
+owner: Abdelrahman-Ezzat-G
+repo: quneva-status
+
+sites:
+  - name: QuNeva Website
+    url: https://www.quneva.com
+  - name: QuNeva Root Domain
+    url: https://quneva.com
+  - name: QuNeva Login
+    url: https://www.quneva.com/login
+
+status-website:
+  cname: status.quneva.com
+  name: QuNeva Status
+  introTitle: "QuNeva System Status"
+  introMessage: "Live uptime and availability monitoring for QuNeva services."
+  navbar:
+    - title: Status
+      href: /
+    - title: QuNeva
+      href: https://www.quneva.com
+
+assignees:
+  - Abdelrahman-Ezzat-G
+
+commitMessages:
+  commitAuthorName: "QuNeva Status Bot"
+  commitAuthorEmail: "status@quneva.com"

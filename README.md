@@ -88,3 +88,4 @@ Go to **Settings → Actions → General**:
 ---
 
 *© 2026 QuNeva WFM — Developed by [Abdelrahman Ezzat](https://www.abdelrahman-ezzat.vip)*
+

@@ -327,7 +327,7 @@ async function checkService(svc) {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
-    await fetch(svc.url, { method: 'HEAD', signal: controller.signal, cache: 'no-cache', mode: 'no-cors' });
+    await fetch(svc.url, { method: 'GET', signal: controller.signal, cache: 'no-cache', mode: 'no-cors' });
     clearTimeout(timeout);
     const ms = Math.round(performance.now() - start);
     return { up: true, ms };

@@ -16,48 +16,74 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check Abdelrahman Portfolio
+        id: abdelrahman
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://www.abdelrahman-ezzat.com)
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://www.abdelrahman-ezzat.com)
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "time=$TIME" >> $GITHUB_OUTPUT
+          echo "Portfolio: HTTP $STATUS in ${TIME}s"
+          [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
+
       - name: Check QuNeva Website
         id: website
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 https://www.quneva.com)
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 https://www.quneva.com)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://www.quneva.com)
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://www.quneva.com)
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "Website: HTTP $STATUS in ${TIME}s"
+          [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
+
+      - name: Check QuNeva HA
+        id: ha
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://ha.quneva.com)
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://ha.quneva.com)
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "time=$TIME" >> $GITHUB_OUTPUT
+          echo "HA: HTTP $STATUS in ${TIME}s"
+          [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
+
+      - name: Check QuNeva AI
+        id: ai
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://ai.quneva.com)
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://ai.quneva.com)
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "time=$TIME" >> $GITHUB_OUTPUT
+          echo "AI: HTTP $STATUS in ${TIME}s"
           [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
 
       - name: Check QuNeva Root Domain
         id: root
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://quneva.com)
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 https://quneva.com)
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://quneva.com)
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "Root domain: HTTP $STATUS in ${TIME}s"
           [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
 
-      - name: Check QuNeva Login
-        id: login
-        run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 https://www.quneva.com/login)
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 https://www.quneva.com/login)
-          echo "status=$STATUS" >> $GITHUB_OUTPUT
-          echo "time=$TIME" >> $GITHUB_OUTPUT
-          echo "Login: HTTP $STATUS in ${TIME}s"
-          [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
-
-      - name: Update status history
+      - name: Update status JSON
         run: |
           mkdir -p data
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           DATE=$(date -u +"%Y-%m-%d")
 
-          # Write latest status JSON
           cat > data/status.json << EOF
           {
             "timestamp": "$TIMESTAMP",
             "date": "$DATE",
             "services": {
+              "abdelrahman": {
+                "name": "Abdelrahman Portfolio",
+                "url": "https://www.abdelrahman-ezzat.com",
+                "status": "${{ steps.abdelrahman.outputs.result }}",
+                "http_status": ${{ steps.abdelrahman.outputs.status }},
+                "response_time_s": ${{ steps.abdelrahman.outputs.time }}
+              },
               "website": {
                 "name": "QuNeva Website",
                 "url": "https://www.quneva.com",
@@ -65,19 +91,26 @@ jobs:
                 "http_status": ${{ steps.website.outputs.status }},
                 "response_time_s": ${{ steps.website.outputs.time }}
               },
+              "ha": {
+                "name": "QuNeva HA",
+                "url": "https://ha.quneva.com",
+                "status": "${{ steps.ha.outputs.result }}",
+                "http_status": ${{ steps.ha.outputs.status }},
+                "response_time_s": ${{ steps.ha.outputs.time }}
+              },
+              "ai": {
+                "name": "QuNeva AI",
+                "url": "https://ai.quneva.com",
+                "status": "${{ steps.ai.outputs.result }}",
+                "http_status": ${{ steps.ai.outputs.status }},
+                "response_time_s": ${{ steps.ai.outputs.time }}
+              },
               "root": {
                 "name": "QuNeva Root Domain",
                 "url": "https://quneva.com",
                 "status": "${{ steps.root.outputs.result }}",
                 "http_status": ${{ steps.root.outputs.status }},
                 "response_time_s": ${{ steps.root.outputs.time }}
-              },
-              "login": {
-                "name": "QuNeva Login",
-                "url": "https://www.quneva.com/login",
-                "status": "${{ steps.login.outputs.result }}",
-                "http_status": ${{ steps.login.outputs.status }},
-                "response_time_s": ${{ steps.login.outputs.time }}
               }
             }
           }
@@ -86,32 +119,85 @@ jobs:
           echo "Status file written:"
           cat data/status.json
 
-      - name: Append to history log
+      - name: Append to history CSV
         run: |
           mkdir -p data
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          echo "$TIMESTAMP,${{ steps.website.outputs.result }},${{ steps.website.outputs.status }},${{ steps.website.outputs.time }},${{ steps.root.outputs.result }},${{ steps.root.outputs.status }},${{ steps.root.outputs.time }},${{ steps.login.outputs.result }},${{ steps.login.outputs.status }},${{ steps.login.outputs.time }}" >> data/history.csv
+          # Add header if file is new
+          if [ ! -f data/history.csv ]; then
+            echo "timestamp,abdelrahman_result,abdelrahman_http,abdelrahman_time,website_result,website_http,website_time,ha_result,ha_http,ha_time,ai_result,ai_http,ai_time,root_result,root_http,root_time" > data/history.csv
+          fi
+          echo "$TIMESTAMP,${{ steps.abdelrahman.outputs.result }},${{ steps.abdelrahman.outputs.status }},${{ steps.abdelrahman.outputs.time }},${{ steps.website.outputs.result }},${{ steps.website.outputs.status }},${{ steps.website.outputs.time }},${{ steps.ha.outputs.result }},${{ steps.ha.outputs.status }},${{ steps.ha.outputs.time }},${{ steps.ai.outputs.result }},${{ steps.ai.outputs.status }},${{ steps.ai.outputs.time }},${{ steps.root.outputs.result }},${{ steps.root.outputs.status }},${{ steps.root.outputs.time }}" >> data/history.csv
 
       - name: Open incident if down
-        if: steps.website.outputs.result == 'down' || steps.login.outputs.result == 'down'
+        id: open_incident
+        if: |
+          steps.abdelrahman.outputs.result == 'down' ||
+          steps.website.outputs.result == 'down' ||
+          steps.ha.outputs.result == 'down' ||
+          steps.ai.outputs.result == 'down' ||
+          steps.root.outputs.result == 'down'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const down = [];
-            if ('${{ steps.website.outputs.result }}' === 'down') down.push('QuNeva Website (HTTP ${{ steps.website.outputs.status }})');
-            if ('${{ steps.login.outputs.result }}' === 'down') down.push('QuNeva Login (HTTP ${{ steps.login.outputs.status }})');
-            const title = `[Incident] Service disruption: ${down.join(', ')}`;
+            const checks = {
+              'Abdelrahman Portfolio': { result: '${{ steps.abdelrahman.outputs.result }}', http: '${{ steps.abdelrahman.outputs.status }}' },
+              'QuNeva Website': { result: '${{ steps.website.outputs.result }}', http: '${{ steps.website.outputs.status }}' },
+              'QuNeva HA': { result: '${{ steps.ha.outputs.result }}', http: '${{ steps.ha.outputs.status }}' },
+              'QuNeva AI': { result: '${{ steps.ai.outputs.result }}', http: '${{ steps.ai.outputs.status }}' },
+              'QuNeva Root Domain': { result: '${{ steps.root.outputs.result }}', http: '${{ steps.root.outputs.status }}' },
+            };
+            const down = Object.entries(checks)
+              .filter(([, v]) => v.result === 'down')
+              .map(([name, v]) => `${name} (HTTP ${v.http})`);
+
             const existing = await github.rest.issues.listForRepo({
-              owner: context.repo.owner, repo: context.repo.repo,
-              state: 'open', labels: 'incident'
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'incident'
             });
             const alreadyOpen = existing.data.some(i => i.title.startsWith('[Incident]'));
             if (!alreadyOpen) {
               await github.rest.issues.create({
-                owner: context.repo.owner, repo: context.repo.repo,
-                title, labels: ['incident'],
-                body: `## Service Disruption Detected\n\n**Time:** ${new Date().toISOString()}\n\n**Affected:** ${down.join(', ')}\n\nThis issue was automatically created by the uptime monitor. It will be closed automatically when services recover.`
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `[Incident] Service disruption: ${down.join(', ')}`,
+                labels: ['incident'],
+                body: `## 🔴 Service Disruption Detected\n\n**Time:** ${new Date().toISOString()}\n\n**Affected services:**\n${down.map(d => `- ${d}`).join('\n')}\n\nThis issue was automatically created by the uptime monitor.\nIt will be **automatically closed** when all affected services recover.`
+              });
+            }
+
+      - name: Auto-close incident if all services recovered
+        if: |
+          steps.abdelrahman.outputs.result == 'up' &&
+          steps.website.outputs.result == 'up' &&
+          steps.ha.outputs.result == 'up' &&
+          steps.ai.outputs.result == 'up' &&
+          steps.root.outputs.result == 'up'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'incident'
+            });
+            for (const issue of existing.data.filter(i => i.title.startsWith('[Incident]'))) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `## ✅ All Systems Recovered\n\n**Time:** ${new Date().toISOString()}\n\nAll monitored services are back online. Closing this incident automatically.`
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed'
               });
             }
 
@@ -125,10 +211,12 @@ jobs:
 
       - name: Summary
         run: |
-          echo "## Uptime Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "## ⏱ Uptime Check Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Service | Status | HTTP | Response |" >> $GITHUB_STEP_SUMMARY
           echo "|---------|--------|------|----------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Abdelrahman Portfolio | ${{ steps.abdelrahman.outputs.result }} | ${{ steps.abdelrahman.outputs.status }} | ${{ steps.abdelrahman.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
           echo "| QuNeva Website | ${{ steps.website.outputs.result }} | ${{ steps.website.outputs.status }} | ${{ steps.website.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
+          echo "| QuNeva HA | ${{ steps.ha.outputs.result }} | ${{ steps.ha.outputs.status }} | ${{ steps.ha.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
+          echo "| QuNeva AI | ${{ steps.ai.outputs.result }} | ${{ steps.ai.outputs.status }} | ${{ steps.ai.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
           echo "| Root Domain | ${{ steps.root.outputs.result }} | ${{ steps.root.outputs.status }} | ${{ steps.root.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
-          echo "| Login Page | ${{ steps.login.outputs.result }} | ${{ steps.login.outputs.status }} | ${{ steps.login.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY

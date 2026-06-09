@@ -88,7 +88,7 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 
 /* BARS inside card */
 .sc-bars{display:grid;grid-template-columns:repeat(40,1fr);align-items:end;gap:2px;height:34px}
-.bar{width:100%;align-self:end;border-radius:2px;background:var(--green);opacity:.65;transition:opacity .2s}
+.bar{width:100%;align-self:end;border-radius:2px;background:var(--green);opacity:.65;transition:opacity .2s;cursor:help}
 .bar.down{background:var(--red);opacity:.9}
 .bar.partial{background:var(--yellow);opacity:.8}
 .bar.nodata{background:var(--border-2);opacity:.5}
@@ -314,7 +314,14 @@ function renderBars(svcId) {
     const cls = state === 'down' ? 'bar down' : state === 'nodata' ? 'bar nodata' : 'bar';
     // Deterministic height based on index + svcId hash (stable across renders)
     const h = 55 + ((i * 13 + svcId.charCodeAt(0) * 3) % 45);
-    return `<div class="${cls}" style="height:${h}%" title="${state}"></div>`;
+    // Compute the window start date for this bar
+    const barEnd   = Date.now() - (39 - i) * 6 * 60 * 60 * 1000;
+    const barStart = barEnd - 6 * 60 * 60 * 1000;
+    const label = new Date(barStart).toLocaleDateString('en-GB', {day:'2-digit',month:'short'})
+                + ' ' + new Date(barStart).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})
+                + ' – ' + new Date(barEnd).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const stateLabel = state === 'up' ? '✅ Operational' : state === 'down' ? '🔴 Outage' : '⬜ No data';
+    return `<div class="${cls}" style="height:${h}%" title="${label}\n${stateLabel}"></div>`;
   }).join('');
 }
 

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-11T00:00:06Z",
+  "timestamp": "2026-06-11T04:48:12Z",
   "date": "2026-06-11",
   "services": {
     "abdelrahman": {
@@ -7,35 +7,35 @@
       "url": "https://www.abdelrahman-ezzat.com",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.247047
+      "response_time_s": 0.084776
     },
     "website": {
       "name": "QuNeva Website",
       "url": "https://www.quneva.com",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.111308
+      "response_time_s": 0.080665
     },
     "ha": {
       "name": "QuNeva HA",
       "url": "https://ha.quneva.com",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.487054
+      "response_time_s": 0.500833
     },
     "ai": {
       "name": "QuNeva AI",
       "url": "https://ai.quneva.com",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.109237
+      "response_time_s": 0.087987
     },
     "root": {
       "name": "QuNeva Root Domain",
       "url": "https://quneva.com",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.181437
+      "response_time_s": 0.188558
     }
   }
 }

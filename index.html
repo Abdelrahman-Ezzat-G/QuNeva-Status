@@ -157,6 +157,20 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .incidents-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px}
 .no-incidents{text-align:center;padding:28px;color:var(--muted);font-size:14px}
 .no-incidents-icon{font-size:28px;margin-bottom:8px;opacity:.45}
+.incident-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.incident-item:last-child{border-bottom:none;padding-bottom:0}
+.incident-item:first-child{padding-top:0}
+.incident-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.incident-body{flex:1;min-width:0}
+.incident-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.incident-title a{color:var(--text);text-decoration:none}
+.incident-title a:hover{color:var(--accent-2)}
+.incident-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.incident-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px}
+.badge-open{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.badge-closed{background:var(--green-bg);color:var(--green);border:1px solid rgba(16,185,129,.2)}
+.incident-time{font-size:11px;color:var(--muted)}
+.incident-loading{text-align:center;padding:20px;color:var(--muted);font-size:13px;opacity:.7}
 
 /* FOOTER */
 footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
@@ -214,16 +228,33 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 <div class="hero">
   <div class="hero-badge badge-operational" id="globalBadge">
     <span class="pulse"></span>
-    <span id="globalStatus">Loading…</span>
+    <span id="globalStatus">All Systems Operational</span>
   </div>
   <h1>QuNeva System Status</h1>
   <p>Real-time uptime and availability monitoring for the QuNeva Workforce Management Platform.</p>
-  <div class="last-updated" id="lastUpdated">Fetching status data…</div>
+  <div class="last-updated" id="lastUpdated">Last checked: 10:15:09 · Live · Auto-refreshes every 5 min</div>
 </div>
 
 <!-- SLA STRIP -->
 <div class="section">
-  <div class="sla-strip" id="slaStrip"></div>
+  <div class="sla-strip" id="slaStrip"><div class="sla-pill">
+      <div class="sla-pill-label">7-Day SLA</div>
+      <div class="sla-pill-value" style="color:var(--muted)">—</div>
+    </div><div class="sla-pill">
+      <div class="sla-pill-label">30-Day SLA</div>
+      <div class="sla-pill-value" style="color:var(--muted)">—</div>
+    </div><div class="sla-pill">
+      <div class="sla-pill-label">90-Day SLA</div>
+      <div class="sla-pill-value" style="color:var(--muted)">—</div>
+    </div>
+    <div class="sla-pill">
+      <div class="sla-pill-label">Total Checks</div>
+      <div class="sla-pill-value" style="color:var(--accent-2)">0</div>
+    </div>
+    <div class="sla-pill">
+      <div class="sla-pill-label">Monitoring Since</div>
+      <div class="sla-pill-value" style="font-size:.85rem;color:var(--accent-2)">02 Jun 2026</div>
+    </div></div>
 </div>
 
 <!-- SERVICES -->
@@ -232,30 +263,248 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
     <div class="section-title">Services</div>
     <div class="section-hint">Hover bars for details · 6h per bar · 10 days</div>
   </div>
-  <div class="services-grid" id="servicesGrid"></div>
+  <div class="services-grid" id="servicesGrid">
+    <div class="service-card card-up">
+      <div class="sc-header">
+        <div class="sc-left">
+          <div class="service-icon icon-dev">👤</div>
+          <div>
+            <div class="service-name">Abdelrahman Ezzat</div>
+            <div class="service-url">www.abdelrahman-ezzat.com</div>
+          </div>
+        </div>
+        <div class="status-chip chip-up"><span class="dot-sm"></span>Operational</div>
+      </div>
+      <div class="sc-bars-wrap">
+        <div class="sc-bars"><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div></div>
+        <div class="sc-bar-labels"><span></span><span>Now</span></div>
+      </div>
+      <div class="sc-footer">
+        <div>
+          <div class="sc-ms" style="color:var(--green)">413ms</div>
+          <div class="sc-ms-label">Response time</div>
+        </div>
+        <div class="sc-uptime">
+          <div class="sc-uptime-pct" style="color:var(--green)">100%</div>
+          <div class="sc-uptime-label">90-day uptime</div>
+        </div>
+      </div>
+      <div class="sc-meta"><span class="data-source source-browser">🌐 Browser check</span><span class="last-incident">Last incident: <span>None</span></span></div>
+    </div>
+    <div class="service-card card-up">
+      <div class="sc-header">
+        <div class="sc-left">
+          <div class="service-icon icon-web">🌐</div>
+          <div>
+            <div class="service-name">QuNeva Website</div>
+            <div class="service-url">www.quneva.com</div>
+          </div>
+        </div>
+        <div class="status-chip chip-up"><span class="dot-sm"></span>Operational</div>
+      </div>
+      <div class="sc-bars-wrap">
+        <div class="sc-bars"><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div></div>
+        <div class="sc-bar-labels"><span></span><span>Now</span></div>
+      </div>
+      <div class="sc-footer">
+        <div>
+          <div class="sc-ms" style="color:var(--yellow)">520ms</div>
+          <div class="sc-ms-label">Response time</div>
+        </div>
+        <div class="sc-uptime">
+          <div class="sc-uptime-pct" style="color:var(--green)">100%</div>
+          <div class="sc-uptime-label">90-day uptime</div>
+        </div>
+      </div>
+      <div class="sc-meta"><span class="data-source source-browser">🌐 Browser check</span><span class="last-incident">Last incident: <span>None</span></span></div>
+    </div>
+    <div class="service-card card-up">
+      <div class="sc-header">
+        <div class="sc-left">
+          <div class="service-icon icon-api">🔄</div>
+          <div>
+            <div class="service-name">QuNeva HA</div>
+            <div class="service-url">ha.quneva.com</div>
+          </div>
+        </div>
+        <div class="status-chip chip-up"><span class="dot-sm"></span>Operational</div>
+      </div>
+      <div class="sc-bars-wrap">
+        <div class="sc-bars"><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div></div>
+        <div class="sc-bar-labels"><span></span><span>Now</span></div>
+      </div>
+      <div class="sc-footer">
+        <div>
+          <div class="sc-ms" style="color:var(--green)">458ms</div>
+          <div class="sc-ms-label">Response time</div>
+        </div>
+        <div class="sc-uptime">
+          <div class="sc-uptime-pct" style="color:var(--green)">100%</div>
+          <div class="sc-uptime-label">90-day uptime</div>
+        </div>
+      </div>
+      <div class="sc-meta"><span class="data-source source-browser">🌐 Browser check</span><span class="last-incident">Last incident: <span>None</span></span></div>
+    </div>
+    <div class="service-card card-up">
+      <div class="sc-header">
+        <div class="sc-left">
+          <div class="service-icon icon-ai">🤖</div>
+          <div>
+            <div class="service-name">QuNeva AI</div>
+            <div class="service-url">ai.quneva.com</div>
+          </div>
+        </div>
+        <div class="status-chip chip-up"><span class="dot-sm"></span>Operational</div>
+      </div>
+      <div class="sc-bars-wrap">
+        <div class="sc-bars"><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div></div>
+        <div class="sc-bar-labels"><span></span><span>Now</span></div>
+      </div>
+      <div class="sc-footer">
+        <div>
+          <div class="sc-ms" style="color:var(--yellow)">612ms</div>
+          <div class="sc-ms-label">Response time</div>
+        </div>
+        <div class="sc-uptime">
+          <div class="sc-uptime-pct" style="color:var(--green)">100%</div>
+          <div class="sc-uptime-label">90-day uptime</div>
+        </div>
+      </div>
+      <div class="sc-meta"><span class="data-source source-browser">🌐 Browser check</span><span class="last-incident">Last incident: <span>None</span></span></div>
+    </div>
+    <div class="service-card card-up">
+      <div class="sc-header">
+        <div class="sc-left">
+          <div class="service-icon icon-auth">🔗</div>
+          <div>
+            <div class="service-name">QuNeva Root Domain</div>
+            <div class="service-url">quneva.com</div>
+          </div>
+        </div>
+        <div class="status-chip chip-up"><span class="dot-sm"></span>Operational</div>
+      </div>
+      <div class="sc-bars-wrap">
+        <div class="sc-bars"><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div></div>
+        <div class="sc-bar-labels"><span></span><span>Now</span></div>
+      </div>
+      <div class="sc-footer">
+        <div>
+          <div class="sc-ms" style="color:var(--yellow)">1453ms</div>
+          <div class="sc-ms-label">Response time</div>
+        </div>
+        <div class="sc-uptime">
+          <div class="sc-uptime-pct" style="color:var(--green)">100%</div>
+          <div class="sc-uptime-label">90-day uptime</div>
+        </div>
+      </div>
+      <div class="sc-meta"><span class="data-source source-browser">🌐 Browser check</span><span class="last-incident">Last incident: <span>None</span></span></div>
+    </div></div>
 </div>
 
 <!-- UPTIME TABLE -->
 <div class="section">
   <div class="section-title" style="margin-bottom:14px">Uptime Summary</div>
-  <div class="uptime-card" id="uptimeCard"></div>
+  <div class="uptime-card" id="uptimeCard"><div class="uptime-row">
+      <div class="uptime-name">Abdelrahman Ezzat</div>
+      <div class="uptime-periods"><div class="uptime-period">
+        <div class="uptime-period-label">7d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div><div class="uptime-period">
+        <div class="uptime-period-label">30d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div><div class="uptime-period">
+        <div class="uptime-period-label">90d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div></div>
+    </div><div class="uptime-row">
+      <div class="uptime-name">QuNeva Website</div>
+      <div class="uptime-periods"><div class="uptime-period">
+        <div class="uptime-period-label">7d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div><div class="uptime-period">
+        <div class="uptime-period-label">30d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div><div class="uptime-period">
+        <div class="uptime-period-label">90d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div></div>
+    </div><div class="uptime-row">
+      <div class="uptime-name">QuNeva HA</div>
+      <div class="uptime-periods"><div class="uptime-period">
+        <div class="uptime-period-label">7d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div><div class="uptime-period">
+        <div class="uptime-period-label">30d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div><div class="uptime-period">
+        <div class="uptime-period-label">90d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div></div>
+    </div><div class="uptime-row">
+      <div class="uptime-name">QuNeva AI</div>
+      <div class="uptime-periods"><div class="uptime-period">
+        <div class="uptime-period-label">7d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div><div class="uptime-period">
+        <div class="uptime-period-label">30d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div><div class="uptime-period">
+        <div class="uptime-period-label">90d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div></div>
+    </div><div class="uptime-row">
+      <div class="uptime-name">QuNeva Root Domain</div>
+      <div class="uptime-periods"><div class="uptime-period">
+        <div class="uptime-period-label">7d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div><div class="uptime-period">
+        <div class="uptime-period-label">30d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div><div class="uptime-period">
+        <div class="uptime-period-label">90d</div>
+        <div class="uptime-period-val" style="color:var(--green)">100%</div>
+      </div></div>
+    </div></div>
 </div>
 
 <!-- METRICS -->
 <div class="section">
   <div class="section-title" style="margin-bottom:14px">Response Times</div>
-  <div class="metrics-grid" id="metricsGrid"></div>
+  <div class="metrics-grid" id="metricsGrid">
+  <div class="metric-card">
+    <div class="metric-label">Avg Response</div>
+    <div class="metric-value" style="color:var(--yellow)">691ms</div>
+    <div class="metric-sub">All services now</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Fastest</div>
+    <div class="metric-value" style="color:var(--green)">413ms</div>
+    <div class="metric-sub">Best endpoint</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Slowest</div>
+    <div class="metric-value" style="color:var(--yellow)">1453ms</div>
+    <div class="metric-sub">Worst endpoint</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Checks Today</div>
+    <div class="metric-value" style="color:var(--accent-2)">87</div>
+    <div class="metric-sub">Every 5 min</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Total Records</div>
+    <div class="metric-value" style="color:var(--accent-2)">0</div>
+    <div class="metric-sub">In history</div>
+  </div></div>
 </div>
 
 <!-- INCIDENTS -->
 <div class="section">
   <div class="section-title" style="margin-bottom:14px">Recent Incidents</div>
-  <div class="incidents-card" id="incidentsCard">
-    <div class="no-incidents">
-      <div class="no-incidents-icon">✅</div>
-      <div>No incidents reported in the last 30 days.</div>
-    </div>
-  </div>
+  <div class="incidents-card" id="incidentsCard"><div class="no-incidents">
+        <div class="no-incidents-icon">✅</div>
+        <div>No incidents reported in the last 30 days.</div>
+      </div></div>
 </div>
 
 <!-- FOOTER -->
@@ -665,6 +914,75 @@ async function fetchHistoryCSV() {
   } catch(e) { console.warn('history.csv unavailable', e.message); }
 }
 
+// ─── Incidents from GitHub Issues API ────────────────────────────────────────
+async function fetchIncidents() {
+  const card = document.getElementById('incidentsCard');
+  try {
+    const OWNER = 'Abdelrahman-Ezzat-G';
+    const REPO  = 'quneva-status';
+    const cutoff = Date.now() - 30 * 86400000;
+
+    // Fetch open + closed incidents from last 30 days
+    const [openRes, closedRes] = await Promise.all([
+      fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues?labels=incident&state=open&per_page=10`, {cache:'no-cache'}),
+      fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues?labels=incident&state=closed&per_page=20&sort=updated&direction=desc`, {cache:'no-cache'})
+    ]);
+
+    const openIssues   = openRes.ok   ? await openRes.json()   : [];
+    const closedIssues = closedRes.ok ? await closedRes.json() : [];
+
+    // Merge and filter last 30 days, sort newest first
+    const all = [...openIssues, ...closedIssues]
+      .filter(i => new Date(i.created_at).getTime() >= cutoff)
+      .sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+    if (!all.length) {
+      card.innerHTML = `<div class="no-incidents">
+        <div class="no-incidents-icon">✅</div>
+        <div>No incidents reported in the last 30 days.</div>
+      </div>`;
+      return;
+    }
+
+    card.innerHTML = all.map(issue => {
+      const isOpen   = issue.state === 'open';
+      const created  = new Date(issue.created_at);
+      const dateStr  = created.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})
+                     + ' ' + created.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      // Duration: for closed issues show how long it lasted
+      let durationStr = '';
+      if (!isOpen && issue.closed_at) {
+        const mins = Math.round((new Date(issue.closed_at) - created) / 60000);
+        durationStr = mins < 60
+          ? ` · ${mins}m duration`
+          : ` · ${Math.round(mins/60)}h ${mins%60}m duration`;
+      }
+      // Strip "[Incident] " prefix from title for cleaner display
+      const title = issue.title.replace(/^\[Incident\]\s*/i, '');
+
+      return `<div class="incident-item">
+        <div class="incident-icon">${isOpen ? '🔴' : '✅'}</div>
+        <div class="incident-body">
+          <div class="incident-title">
+            <a href="${issue.html_url}" target="_blank" rel="noopener">${title}</a>
+          </div>
+          <div class="incident-meta">
+            <span class="incident-badge ${isOpen ? 'badge-open' : 'badge-closed'}">${isOpen ? 'Ongoing' : 'Resolved'}</span>
+            <span class="incident-time">${dateStr}${durationStr}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+  } catch(e) {
+    card.innerHTML = `<div class="no-incidents">
+      <div class="no-incidents-icon">⚠️</div>
+      <div>Could not load incident history.</div>
+    </div>`;
+    console.warn('incidents fetch failed', e.message);
+  }
+}
+
 async function browserCheck(svc) {
   const t0 = performance.now();
   try {
@@ -681,7 +999,7 @@ async function browserCheck(svc) {
 
 // ─── Main loop ────────────────────────────────────────────────────────────────
 async function runAll() {
-  await Promise.all([fetchStatusJSON(), fetchHistoryCSV()]);
+  await Promise.all([fetchStatusJSON(), fetchHistoryCSV(), fetchIncidents()]);
   renderGrid(); renderUptime(); renderMetrics(); renderGlobal(); renderSLA();
 
   await Promise.all(SERVICES.map(async svc => {

@@ -261,7 +261,7 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 <div class="section">
   <div class="section-header">
     <div class="section-title">Services</div>
-    <div class="section-hint">Hover bars for details · 6h per bar · 10 days</div>
+    <div class="section-hint">Hover bars for details · 1h per bar · 40 hours</div>
   </div>
   <div class="services-grid" id="servicesGrid">
     <div class="service-card card-up">
@@ -561,7 +561,7 @@ function calcUptimePeriod(rows, colIdx, daysAgo) {
 
 function buildBarHistory(rows, colIdx) {
   const NOW    = Date.now();
-  const WINDOW = 6 * 60 * 60 * 1000;
+  const WINDOW = 60 * 60 * 1000;
   const bars   = [];
 
   for (let i = 39; i >= 0; i--) {

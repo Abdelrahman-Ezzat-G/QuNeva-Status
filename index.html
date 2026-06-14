@@ -453,7 +453,7 @@ function msColor(ms){
 }
 function scoreColor(score){
   if(score === null || score === undefined) return 'var(--muted)';
-  if(score >= 99.9) return 'var(--green)';
+  if(score >= 99) return 'var(--green)';
   if(score >= 95) return 'var(--yellow)';
   return 'var(--red)';
 }

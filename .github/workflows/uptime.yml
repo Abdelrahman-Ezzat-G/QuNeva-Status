@@ -215,9 +215,18 @@ jobs:
         run: |
           git config user.name "QuNeva Status Bot"
           git config user.email "status-bot@quneva.com"
+
           git add data/
-          git diff --staged --quiet || git commit -m "chore: uptime check $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git push
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "chore: uptime check $(date -u +'%Y-%m-%d %H:%M UTC')"
+
+          git pull --rebase origin main
+          git push origin main
 
       - name: Summary
         run: |

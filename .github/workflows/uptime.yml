@@ -22,6 +22,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Sync latest main
+        run: |
+          git pull --rebase origin main
+          
       - name: Check Abdelrahman Portfolio
         id: abdelrahman
         continue-on-error: true

@@ -20,6 +20,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:radial-gradient(1200px 600px at 80% -10%,rgba(124,92,255,.15),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(167,139,250,.10),transparent 60%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;min-height:100vh}
 a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}
+
 nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(10,14,26,.75);border-bottom:1px solid var(--border)}
 .nav-inner{max-width:920px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
@@ -27,6 +28,7 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .brand-qn{background:linear-gradient(to right,#9F7AEA,#a78bfa,#67E8F9);-webkit-background-clip:text;background-clip:text;color:transparent}
 .nav-links{display:flex;gap:20px;font-size:13px}
 .nav-links a{color:var(--muted)}.nav-links a:hover{color:var(--text);text-decoration:none}
+
 .hero{max-width:920px;margin:0 auto;padding:52px 24px 36px;text-align:center}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;margin-bottom:18px}
 .badge-operational{background:var(--green-bg);color:var(--green);border:1px solid rgba(16,185,129,.25)}
@@ -38,14 +40,17 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .hero h1{font-size:2.1rem;font-weight:700;margin-bottom:10px}
 .hero p{font-size:.97rem;color:var(--muted);max-width:440px;margin:0 auto;line-height:1.65}
 .last-updated{font-size:11.5px;color:var(--muted);margin-top:12px;opacity:.65}
+
 .section{max-width:920px;margin:0 auto;padding:0 24px 44px}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .section-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .section-hint{font-size:11px;color:var(--muted);opacity:.6}
+
 .sla-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
 .sla-pill{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 16px;flex:1;min-width:120px;text-align:center}
 .sla-pill-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
 .sla-pill-value{font-size:1.25rem;font-weight:700;color:var(--green)}
+
 .services-grid{display:grid;grid-template-columns:1fr;gap:12px}
 .service-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
 .service-card.card-up{border-left:3px solid var(--green)}
@@ -57,21 +62,32 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .icon-web{background:rgba(124,92,255,.15)}.icon-auth{background:rgba(16,185,129,.12)}.icon-api{background:rgba(103,232,249,.10)}.icon-dev{background:rgba(245,158,11,.12)}.icon-ai{background:rgba(167,139,250,.15)}
 .service-name{font-size:14px;font-weight:600}
 .service-url{font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
+
 .status-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap}
 .chip-up{background:var(--green-bg);color:var(--green)}
 .chip-down{background:var(--red-bg);color:var(--red)}
 .chip-checking{background:rgba(138,146,178,.1);color:var(--muted)}
-.sc-bars{display:grid;grid-template-columns:repeat(24,1fr);align-items:end;gap:2px;height:36px}
-.bar{width:100%;height:100%;border-radius:2px 2px 0 0;background:var(--green);opacity:.65;cursor:help}
-.bar.down{background:var(--red);opacity:.9}
-.bar.slow{background:var(--yellow);opacity:.85}
-.bar.nodata{background:var(--border-2);opacity:.35;height:40%}
-.bar:hover{opacity:1}
-.bar-tooltip{display:none;position:fixed;z-index:999;background:#0d1220;border:1px solid var(--border-2);border-radius:8px;padding:8px 11px;font-size:11.5px;line-height:1.6;color:var(--text);pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);min-width:160px}
+
+.sc-bars{display:grid;grid-template-columns:repeat(40,1fr);align-items:end;gap:2px;height:46px}
+.bar{
+  width:100%;
+  border-radius:2px 2px 0 0;
+  opacity:.9;
+  cursor:help;
+  background:var(--green);
+  min-height:14px;
+}
+.bar.down{background:var(--red)}
+.bar.slow{background:var(--yellow)}
+.bar.nodata{background:var(--border-2);opacity:.35;height:35%}
+.bar:hover{opacity:1;filter:brightness(1.12)}
+
+.bar-tooltip{display:none;position:fixed;z-index:999;background:#0d1220;border:1px solid var(--border-2);border-radius:8px;padding:9px 12px;font-size:11.5px;line-height:1.65;color:var(--text);pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);min-width:220px}
 .bar-tooltip.visible{display:block}
 .tt-date{color:var(--muted);font-size:10.5px;margin-bottom:3px}
-.tt-status{font-weight:600}.tt-status.up{color:var(--green)}.tt-status.down{color:var(--red)}.tt-status.nodata{color:var(--muted)}
-.tt-row{display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--muted);margin-top:1px}.tt-val{color:var(--text);font-weight:500}
+.tt-status{font-weight:700}.tt-status.up{color:var(--green)}.tt-status.down{color:var(--red)}.tt-status.slow{color:var(--yellow)}.tt-status.nodata{color:var(--muted)}
+.tt-row{display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--muted);margin-top:1px}.tt-val{color:var(--text);font-weight:600}
+
 .sc-bar-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--muted);opacity:.5}
 .sc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
 .sc-ms{font-size:19px;font-weight:700}.sc-ms-label,.sc-uptime-label{font-size:11px;color:var(--muted);margin-top:1px}
@@ -79,22 +95,27 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .sc-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
 .data-source{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500}
 .source-live{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2)}
-.source-browser{background:rgba(138,146,178,.08);color:var(--muted);border:1px solid var(--border)}
 .last-incident{font-size:10.5px;color:var(--muted)}.last-incident span{color:var(--green);font-weight:500}
+
 .uptime-card,.incidents-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .uptime-row{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;gap:12px}
 .uptime-row:not(:last-child){border-bottom:1px solid var(--border)}
 .uptime-name{font-size:13px;min-width:160px}.uptime-periods{display:flex;gap:20px;align-items:center;flex:1;justify-content:flex-end}
 .uptime-period{text-align:center;min-width:64px}.uptime-period-label{font-size:9.5px;color:var(--muted);text-transform:uppercase}.uptime-period-val{font-size:13px;font-weight:600}
+
 .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px}
 .metric-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:15px 17px}
 .metric-label{font-size:10.5px;color:var(--muted);margin-bottom:5px;text-transform:uppercase}.metric-value{font-size:1.55rem;font-weight:700}.metric-sub{font-size:10.5px;color:var(--muted);margin-top:2px}
+
 .incidents-card{padding:20px}.no-incidents{text-align:center;padding:28px;color:var(--muted);font-size:14px}.no-incidents-icon{font-size:28px;margin-bottom:8px;opacity:.45}
 .incident-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}.incident-item:last-child{border-bottom:none;padding-bottom:0}.incident-icon{font-size:18px;flex-shrink:0}.incident-body{flex:1}.incident-title{font-size:13px;font-weight:600;margin-bottom:4px}.incident-title a{color:var(--text)}.incident-meta{display:flex;gap:10px;flex-wrap:wrap}.incident-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px}.badge-open{background:var(--red-bg);color:var(--red)}.badge-closed{background:var(--green-bg);color:var(--green)}.incident-time{font-size:11px;color:var(--muted)}
+
 footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
 .footer-left{display:flex;align-items:center;gap:8px}.footer-links{display:flex;gap:16px}.footer-links a{color:var(--muted)}
+
 @media(max-width:640px){
   .hero h1{font-size:1.55rem}.nav-links{gap:12px}.sla-pill{min-width:80px;padding:8px 10px}.sla-pill-value{font-size:1rem}
+  .sc-bars{gap:1px;height:42px}
   .uptime-row{flex-direction:column;align-items:flex-start}.uptime-name{min-width:unset;font-size:12px;color:var(--muted)}.uptime-periods{width:100%;justify-content:space-between;gap:0}.uptime-period{min-width:unset;flex:1}
 }
 </style>
@@ -105,7 +126,10 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
   <div class="tt-date" id="ttDate"></div>
   <div class="tt-status" id="ttStatus"></div>
   <div class="tt-row"><span>Avg response</span><span class="tt-val" id="ttMs">—</span></div>
-  <div class="tt-row"><span>Checks in window</span><span class="tt-val" id="ttChecks">—</span></div>
+  <div class="tt-row"><span>Best response</span><span class="tt-val" id="ttBest">—</span></div>
+  <div class="tt-row"><span>Worst response</span><span class="tt-val" id="ttWorst">—</span></div>
+  <div class="tt-row"><span>Checks</span><span class="tt-val" id="ttChecks">—</span></div>
+  <div class="tt-row"><span>Good / Slow / Down</span><span class="tt-val" id="ttMix">—</span></div>
 </div>
 
 <nav>
@@ -134,14 +158,12 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
   <div class="last-updated" id="lastUpdated">Loading latest check…</div>
 </div>
 
-<div class="section">
-  <div class="sla-strip" id="slaStrip"></div>
-</div>
+<div class="section"><div class="sla-strip" id="slaStrip"></div></div>
 
 <div class="section">
   <div class="section-header">
     <div class="section-title">Services</div>
-    <div class="section-hint">Hover bars for details · Last 24 checks</div>
+    <div class="section-hint">Hover bars for details · 6h per bar · 10 days</div>
   </div>
   <div class="services-grid" id="servicesGrid"></div>
 </div>
@@ -180,7 +202,10 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 </footer>
 
 <script>
-const BAR_COUNT = 24;
+const BAR_COUNT = 40;
+const BAR_WINDOW_MS = 6 * 60 * 60 * 1000;
+const GOOD_LIMIT_MS = 800;
+const SLOW_LIMIT_MS = 1500;
 
 const SERVICES = [
   { id:'abdelrahman', name:'Abdelrahman Ezzat', url:'https://www.abdelrahman-ezzat.com', icon:'👤', iconClass:'icon-dev' },
@@ -214,23 +239,93 @@ function calcUptimePeriod(rows,colIdx,daysAgo){
   return ((up / filtered.length) * 100).toFixed(0);
 }
 
-function buildBarHistory(rows,colIdx){
-  const recent = rows.slice(-BAR_COUNT);
-  const missing = Math.max(0, BAR_COUNT - recent.length);
-  const bars = Array(missing).fill(0).map(() => ({
-    state:'nodata', avgMs:null, checks:0, ts:null
-  }));
+function classifyCheck(row,colIdx){
+  const result = row[colIdx]?.trim();
+  const sec = parseFloat(row[colIdx + 2]);
+  const ms = !isNaN(sec) && sec > 0 ? Math.round(sec * 1000) : null;
 
-  recent.forEach(r => {
-    const state = r[colIdx]?.trim() === 'down' ? 'down' : 'up';
-    const sec = parseFloat(r[colIdx + 2]);
+  if(result === 'down') return { type:'down', ms };
+  if(ms !== null && ms >= SLOW_LIMIT_MS) return { type:'down', ms };
+  if(ms !== null && ms >= GOOD_LIMIT_MS) return { type:'slow', ms };
+  return { type:'good', ms };
+}
+
+function buildGradient(good, slow, down){
+  const total = good + slow + down;
+  if(!total) return null;
+
+  const colors = [];
+  const parts = [
+    { count: good, color: 'var(--green)' },
+    { count: slow, color: 'var(--yellow)' },
+    { count: down, color: 'var(--red)' }
+  ].filter(p => p.count > 0);
+
+  let start = 0;
+  parts.forEach((p, index) => {
+    const width = (p.count / total) * 100;
+    const end = index === parts.length - 1 ? 100 : start + width;
+    colors.push(`${p.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`);
+    start = end;
+  });
+
+  return `linear-gradient(to right, ${colors.join(', ')})`;
+}
+
+function buildBarHistory(rows,colIdx){
+  const now = Date.now();
+  const bars = [];
+
+  for(let i = BAR_COUNT - 1; i >= 0; i--){
+    const winEnd = now - i * BAR_WINDOW_MS;
+    const winStart = winEnd - BAR_WINDOW_MS;
+
+    const bucket = rows.filter(r => {
+      const ts = new Date(r[0]).getTime();
+      return ts >= winStart && ts < winEnd;
+    });
+
+    if(!bucket.length){
+      bars.push({
+        state:'nodata', avgMs:null, bestMs:null, worstMs:null, checks:0,
+        good:0, slow:0, down:0, winStart, winEnd, gradient:null
+      });
+      continue;
+    }
+
+    let good = 0, slow = 0, down = 0;
+    const times = [];
+
+    bucket.forEach(r => {
+      const c = classifyCheck(r,colIdx);
+      if(c.type === 'down') down++;
+      else if(c.type === 'slow') slow++;
+      else good++;
+      if(c.ms !== null) times.push(c.ms);
+    });
+
+    const avgMs = times.length ? Math.round(times.reduce((a,b)=>a+b,0) / times.length) : null;
+    const bestMs = times.length ? Math.min(...times) : null;
+    const worstMs = times.length ? Math.max(...times) : null;
+
+    let state = 'up';
+    if(down > 0) state = 'down';
+    else if(slow > 0) state = 'slow';
+
     bars.push({
       state,
-      avgMs: !isNaN(sec) && sec > 0 ? Math.round(sec * 1000) : null,
-      checks: 1,
-      ts: new Date(r[0]).getTime()
+      avgMs,
+      bestMs,
+      worstMs,
+      checks: bucket.length,
+      good,
+      slow,
+      down,
+      winStart,
+      winEnd,
+      gradient: buildGradient(good, slow, down)
     });
-  });
+  }
 
   return bars;
 }
@@ -239,26 +334,44 @@ const tooltip = document.getElementById('barTooltip');
 const ttDate = document.getElementById('ttDate');
 const ttStatus = document.getElementById('ttStatus');
 const ttMs = document.getElementById('ttMs');
+const ttBest = document.getElementById('ttBest');
+const ttWorst = document.getElementById('ttWorst');
 const ttChecks = document.getElementById('ttChecks');
+const ttMix = document.getElementById('ttMix');
 
 function showTooltip(e,bar){
-  if(bar.ts){
-    const d = new Date(bar.ts);
-    ttDate.textContent = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  if(bar.winStart && bar.winEnd){
+    const d1 = new Date(bar.winStart);
+    const d2 = new Date(bar.winEnd);
+    ttDate.textContent =
+      d1.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) + ' ' +
+      d1.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) +
+      ' → ' +
+      d2.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   } else {
     ttDate.textContent = 'No historical record';
   }
-  ttStatus.textContent = bar.state === 'up' ? '✅ Operational' : bar.state === 'down' ? '🔴 Outage' : '⬜ No data';
+
+  ttStatus.textContent =
+    bar.state === 'up' ? '✅ Stable / Good' :
+    bar.state === 'slow' ? '🟠 Slow response detected' :
+    bar.state === 'down' ? '🔴 Outage or very slow detected' :
+    '⬜ No data';
+
   ttStatus.className = 'tt-status ' + bar.state;
   ttMs.textContent = bar.avgMs !== null ? bar.avgMs + ' ms' : '—';
-  ttChecks.textContent = bar.checks ? bar.checks + ' check' : '—';
+  ttBest.textContent = bar.bestMs !== null ? bar.bestMs + ' ms' : '—';
+  ttWorst.textContent = bar.worstMs !== null ? bar.worstMs + ' ms' : '—';
+  ttChecks.textContent = bar.checks ? bar.checks + (bar.checks === 1 ? ' check' : ' checks') : '—';
+  ttMix.textContent = bar.checks ? `${bar.good} / ${bar.slow} / ${bar.down}` : '—';
+
   tooltip.classList.add('visible');
   positionTooltip(e);
 }
 
 function positionTooltip(e){
-  const TW = tooltip.offsetWidth || 180;
-  const TH = tooltip.offsetHeight || 90;
+  const TW = tooltip.offsetWidth || 240;
+  const TH = tooltip.offsetHeight || 120;
   let x = e.clientX + 12;
   let y = e.clientY - TH - 8;
   if(x + TW > window.innerWidth - 8) x = e.clientX - TW - 12;
@@ -271,14 +384,29 @@ function hideTooltip(){ tooltip.classList.remove('visible'); }
 
 function renderBars(svcId){
   const history = barHistory[svcId];
-  if(!history) return Array(BAR_COUNT).fill(0).map(() => `<div class="bar nodata" style="height:40%"></div>`).join('');
+  if(!history) {
+    return Array(BAR_COUNT).fill(0).map(() => `<div class="bar nodata" style="height:35%"></div>`).join('');
+  }
+
   return history.map((bar,i) => {
     let cls = 'bar';
     if(bar.state === 'down') cls = 'bar down';
+    else if(bar.state === 'slow') cls = 'bar slow';
     else if(bar.state === 'nodata') cls = 'bar nodata';
-    else if(bar.avgMs !== null && bar.avgMs > 1500) cls = 'bar slow';
-    const h = bar.state === 'nodata' ? 40 : 100;
-    return `<div class="${cls}" style="height:${h}%" data-svc="${svcId}" data-idx="${i}"></div>`;
+
+    let h = 100;
+    if(bar.state === 'nodata'){
+      h = 35;
+    } else if(bar.avgMs !== null){
+      if(bar.avgMs < 300) h = 100;
+      else if(bar.avgMs < 600) h = 88;
+      else if(bar.avgMs < 1000) h = 74;
+      else if(bar.avgMs < 1500) h = 58;
+      else h = 42;
+    }
+
+    const bg = bar.gradient ? `background:${bar.gradient};` : '';
+    return `<div class="${cls}" style="height:${h}%;${bg}" data-svc="${svcId}" data-idx="${i}"></div>`;
   }).join('');
 }
 
@@ -296,7 +424,7 @@ function attachBarEvents(){
 
 function msColor(ms){
   if(!ms) return 'var(--muted)';
-  if(ms < 500) return 'var(--green)';
+  if(ms < 800) return 'var(--green)';
   if(ms < 1500) return 'var(--yellow)';
   return 'var(--red)';
 }
@@ -335,6 +463,7 @@ function renderSLA(){
 
 function renderGrid(){
   const grid = document.getElementById('servicesGrid');
+
   grid.innerHTML = SERVICES.map(svc => {
     const auth = authoritative[svc.id];
     const brow = browser[svc.id];
@@ -349,7 +478,7 @@ function renderGrid(){
       isUp = brow.up !== false;
       isChecking = false;
       displayMs = brow.ms;
-      sourceLabel = `<span class="data-source source-browser">🌐 Browser check</span>`;
+      sourceLabel = `<span class="data-source source-live">🌐 Browser check</span>`;
     } else {
       isUp = true; isChecking = true; displayMs = null; sourceLabel = '';
     }
@@ -365,11 +494,11 @@ function renderGrid(){
     const hist = barHistory[svc.id] || [];
     const lastDown = [...hist].reverse().find(b => b.state === 'down');
     const lastIncidentHtml = lastDown
-      ? `<span class="last-incident">Last incident: <span style="color:var(--yellow)">${lastDown.ts ? new Date(lastDown.ts).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) : 'Unknown'}</span></span>`
+      ? `<span class="last-incident">Last incident: <span style="color:var(--yellow)">${new Date(lastDown.winStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</span></span>`
       : `<span class="last-incident">Last incident: <span>None</span></span>`;
 
-    const firstReal = hist.find(b => b.ts);
-    const rangeLabel = firstReal ? new Date(firstReal.ts).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) : '';
+    const firstReal = hist.find(b => b.winStart && b.state !== 'nodata');
+    const rangeLabel = firstReal ? new Date(firstReal.winStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) : '';
 
     return `<div class="service-card ${cardClass}">
       <div class="sc-header">
@@ -382,10 +511,12 @@ function renderGrid(){
         </div>
         <div class="status-chip ${chipClass}"><span class="dot-sm"></span>${chipText}</div>
       </div>
+
       <div class="sc-bars-wrap">
         <div class="sc-bars">${renderBars(svc.id)}</div>
-        <div class="sc-bar-labels"><span>${rangeLabel}</span><span>Latest</span></div>
+        <div class="sc-bar-labels"><span>${rangeLabel}</span><span>Now</span></div>
       </div>
+
       <div class="sc-footer">
         <div>
           <div class="sc-ms" style="color:${msColor(displayMs)}">${fmtMs(displayMs)}</div>
@@ -396,9 +527,11 @@ function renderGrid(){
           <div class="sc-uptime-label">90-day uptime</div>
         </div>
       </div>
+
       <div class="sc-meta">${sourceLabel}${lastIncidentHtml}</div>
     </div>`;
   }).join('');
+
   attachBarEvents();
 }
 

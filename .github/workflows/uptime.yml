@@ -139,15 +139,24 @@ jobs:
         run: |
           mkdir -p data
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          MONTH=$(date -u +"%Y-%m")
+          HEADER="timestamp,abdelrahman_result,abdelrahman_http,abdelrahman_time,website_result,website_http,website_time,ha_result,ha_http,ha_time,ai_result,ai_http,ai_time,root_result,root_http,root_time"
+          ROW="$TIMESTAMP,${{ steps.abdelrahman.outputs.result || 'down' }},${{ steps.abdelrahman.outputs.status || 0 }},${{ steps.abdelrahman.outputs.time || 0 }},${{ steps.website.outputs.result || 'down' }},${{ steps.website.outputs.status || 0 }},${{ steps.website.outputs.time || 0 }},${{ steps.ha.outputs.result || 'down' }},${{ steps.ha.outputs.status || 0 }},${{ steps.ha.outputs.time || 0 }},${{ steps.ai.outputs.result || 'down' }},${{ steps.ai.outputs.status || 0 }},${{ steps.ai.outputs.time || 0 }},${{ steps.root.outputs.result || 'down' }},${{ steps.root.outputs.status || 0 }},${{ steps.root.outputs.time || 0 }}"
 
+          # Live file used by the dashboard (kept to the most recent 500 rows)
           if [ ! -f data/history.csv ]; then
-            echo "timestamp,abdelrahman_result,abdelrahman_http,abdelrahman_time,website_result,website_http,website_time,ha_result,ha_http,ha_time,ai_result,ai_http,ai_time,root_result,root_http,root_time" > data/history.csv
+            echo "$HEADER" > data/history.csv
           fi
-
-          echo "$TIMESTAMP,${{ steps.abdelrahman.outputs.result || 'down' }},${{ steps.abdelrahman.outputs.status || 0 }},${{ steps.abdelrahman.outputs.time || 0 }},${{ steps.website.outputs.result || 'down' }},${{ steps.website.outputs.status || 0 }},${{ steps.website.outputs.time || 0 }},${{ steps.ha.outputs.result || 'down' }},${{ steps.ha.outputs.status || 0 }},${{ steps.ha.outputs.time || 0 }},${{ steps.ai.outputs.result || 'down' }},${{ steps.ai.outputs.status || 0 }},${{ steps.ai.outputs.time || 0 }},${{ steps.root.outputs.result || 'down' }},${{ steps.root.outputs.status || 0 }},${{ steps.root.outputs.time || 0 }}" >> data/history.csv
-
+          echo "$ROW" >> data/history.csv
           tail -n 500 data/history.csv > data/history.tmp
           mv data/history.tmp data/history.csv
+
+          # Permanent monthly archive (append-only, never truncated)
+          ARCHIVE="data/history-archive-$MONTH.csv"
+          if [ ! -f "$ARCHIVE" ]; then
+            echo "$HEADER" > "$ARCHIVE"
+          fi
+          echo "$ROW" >> "$ARCHIVE"
 
       - name: Open incident if down
         if: |
@@ -225,12 +234,49 @@ jobs:
               });
             }
 
+      - name: Build incidents JSON
+        continue-on-error: true
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const cutoff = Date.now() - 30 * 86400000;
+
+            const [open, closed] = await Promise.all([
+              github.rest.issues.listForRepo({
+                owner: context.repo.owner, repo: context.repo.repo,
+                state: 'open', labels: 'incident', per_page: 20
+              }),
+              github.rest.issues.listForRepo({
+                owner: context.repo.owner, repo: context.repo.repo,
+                state: 'closed', labels: 'incident', per_page: 30,
+                sort: 'updated', direction: 'desc'
+              })
+            ]);
+
+            const all = [...open.data, ...closed.data]
+              .filter(i => !i.pull_request)
+              .filter(i => new Date(i.created_at).getTime() >= cutoff)
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+              .map(i => ({
+                title: i.title,
+                html_url: i.html_url,
+                state: i.state,
+                created_at: i.created_at,
+                closed_at: i.closed_at
+              }));
+
+            fs.mkdirSync('data', { recursive: true });
+            fs.writeFileSync('data/incidents.json', JSON.stringify(all, null, 2) + '\n');
+            console.log(`Wrote ${all.length} incidents to data/incidents.json`);
+
       - name: Commit status data
         run: |
           git config user.name "QuNeva Status Bot"
           git config user.email "status-bot@quneva.com"
 
-          git add data/status.json data/history.csv
+          git add data/
 
           if git diff --staged --quiet; then
             echo "No status changes to commit"

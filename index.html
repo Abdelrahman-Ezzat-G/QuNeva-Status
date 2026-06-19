@@ -460,6 +460,16 @@ function scoreColor(score){
 function fmtPct(v){ return v === null || v === undefined ? '—' : Number(v).toFixed(1).replace('.0','') + '%'; }
 function fmtMs(ms){ return ms ? ms + 'ms' : '—'; }
 
+/* --- Security helpers: prevent XSS from externally-sourced incident data --- */
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[c]);
+}
+function safeUrl(u){
+  return (typeof u === 'string' && /^https:\/\/github\.com\//.test(u)) ? u : '#';
+}
+
 function renderSLA(){
   const strip = document.getElementById('slaStrip');
   const periods = [7,30,90];
@@ -676,20 +686,11 @@ async function fetchHistoryCSV(){
 async function fetchIncidents(){
   const card = document.getElementById('incidentsCard');
   try{
-    const OWNER = 'Abdelrahman-Ezzat-G';
-    const REPO = 'quneva-status';
-    const cutoff = Date.now() - 30 * 86400000;
+    const res = await fetch('data/incidents.json?_=' + Date.now(), {cache:'no-cache'});
+    if(!res.ok) throw new Error('incidents.json unavailable');
+    const all = await res.json();
 
-    const [openRes,closedRes] = await Promise.all([
-      fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues?labels=incident&state=open&per_page=10`, {cache:'no-cache'}),
-      fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues?labels=incident&state=closed&per_page=20&sort=updated&direction=desc`, {cache:'no-cache'})
-    ]);
-
-    const openIssues = openRes.ok ? await openRes.json() : [];
-    const closedIssues = closedRes.ok ? await closedRes.json() : [];
-    const all = [...openIssues,...closedIssues].filter(i => new Date(i.created_at).getTime() >= cutoff).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-
-    if(!all.length){
+    if(!Array.isArray(all) || !all.length){
       card.innerHTML = `<div class="no-incidents"><div class="no-incidents-icon">✅</div><div>No incidents reported in the last 30 days.</div></div>`;
       return;
     }
@@ -703,11 +704,12 @@ async function fetchIncidents(){
         const mins = Math.round((new Date(issue.closed_at) - created) / 60000);
         durationStr = mins < 60 ? ` · ${mins}m duration` : ` · ${Math.round(mins/60)}h ${mins%60}m duration`;
       }
-      const title = issue.title.replace(/^\[Incident\]\s*/i,'');
+      const title = escapeHtml(String(issue.title || '').replace(/^\[Incident\]\s*/i,''));
+      const url = safeUrl(issue.html_url);
       return `<div class="incident-item">
         <div class="incident-icon">${isOpen ? '🔴' : '✅'}</div>
         <div class="incident-body">
-          <div class="incident-title"><a href="${issue.html_url}" target="_blank" rel="noopener">${title}</a></div>
+          <div class="incident-title"><a href="${url}" target="_blank" rel="noopener">${title}</a></div>
           <div class="incident-meta"><span class="incident-badge ${isOpen ? 'badge-open' : 'badge-closed'}">${isOpen ? 'Ongoing' : 'Resolved'}</span><span class="incident-time">${dateStr}${durationStr}</span></div>
         </div>
       </div>`;

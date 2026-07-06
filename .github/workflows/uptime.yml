@@ -158,6 +158,17 @@ jobs:
           fi
           echo "$ROW" >> "$ARCHIVE"
 
+      - name: Build archive manifest
+        run: |
+          # List available monthly archives so the dashboard fetches exactly
+          # what exists (no guessing, no 404s).
+          ls data/history-archive-*.csv 2>/dev/null \
+            | sed -E 's|.*history-archive-(.+)\.csv|\1|' \
+            | sort \
+            | python3 -c "import sys, json; print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))" \
+            > data/archives.json
+          cat data/archives.json
+
       - name: Open incident if down
         if: |
           steps.abdelrahman.outputs.result == 'down' ||
@@ -166,15 +177,26 @@ jobs:
           steps.ai.outputs.result == 'down' ||
           steps.root.outputs.result == 'down'
         uses: actions/github-script@v8
+        env:
+          ABDELRAHMAN_RESULT: ${{ steps.abdelrahman.outputs.result }}
+          ABDELRAHMAN_HTTP: ${{ steps.abdelrahman.outputs.status }}
+          WEBSITE_RESULT: ${{ steps.website.outputs.result }}
+          WEBSITE_HTTP: ${{ steps.website.outputs.status }}
+          HA_RESULT: ${{ steps.ha.outputs.result }}
+          HA_HTTP: ${{ steps.ha.outputs.status }}
+          AI_RESULT: ${{ steps.ai.outputs.result }}
+          AI_HTTP: ${{ steps.ai.outputs.status }}
+          ROOT_RESULT: ${{ steps.root.outputs.result }}
+          ROOT_HTTP: ${{ steps.root.outputs.status }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const checks = {
-              'Abdelrahman Portfolio': { result: '${{ steps.abdelrahman.outputs.result }}', http: '${{ steps.abdelrahman.outputs.status }}' },
-              'QuNeva Website': { result: '${{ steps.website.outputs.result }}', http: '${{ steps.website.outputs.status }}' },
-              'QuNeva HA': { result: '${{ steps.ha.outputs.result }}', http: '${{ steps.ha.outputs.status }}' },
-              'QuNeva AI': { result: '${{ steps.ai.outputs.result }}', http: '${{ steps.ai.outputs.status }}' },
-              'QuNeva Root Domain': { result: '${{ steps.root.outputs.result }}', http: '${{ steps.root.outputs.status }}' },
+              'Abdelrahman Portfolio': { result: process.env.ABDELRAHMAN_RESULT, http: process.env.ABDELRAHMAN_HTTP },
+              'QuNeva Website': { result: process.env.WEBSITE_RESULT, http: process.env.WEBSITE_HTTP },
+              'QuNeva HA': { result: process.env.HA_RESULT, http: process.env.HA_HTTP },
+              'QuNeva AI': { result: process.env.AI_RESULT, http: process.env.AI_HTTP },
+              'QuNeva Root Domain': { result: process.env.ROOT_RESULT, http: process.env.ROOT_HTTP },
             };
 
             const down = Object.entries(checks)

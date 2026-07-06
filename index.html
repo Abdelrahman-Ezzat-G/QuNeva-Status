@@ -213,14 +213,15 @@ const GOOD_LIMIT_MS = 800;
 const SLOW_LIMIT_MS = 1500;
 
 const SERVICES = [
-  { id:'abdelrahman', name:'Abdelrahman Ezzat', url:'https://www.abdelrahman-ezzat.com', icon:'👤', iconClass:'icon-dev' },
   { id:'website', name:'QuNeva Website', url:'https://www.quneva.com', icon:'🌐', iconClass:'icon-web' },
   { id:'ha', name:'QuNeva HA', url:'https://ha.quneva.com', icon:'🔄', iconClass:'icon-api' },
   { id:'ai', name:'QuNeva AI', url:'https://ai.quneva.com', icon:'🤖', iconClass:'icon-ai' },
   { id:'root', name:'QuNeva Root Domain', url:'https://quneva.com', icon:'🔗', iconClass:'icon-auth' },
 ];
 
-const CSV_COLS = { abdelrahman:1, website:4, ha:7, ai:10, root:13 };
+// CSV schema (13 columns): timestamp, website(1-3), ha(4-6), ai(7-9), root(10-12)
+const CSV_COLS = { website:1, ha:4, ai:7, root:10 };
+const MIN_CSV_COLS = 13;
 
 const authoritative = {};
 const browser = {};
@@ -233,7 +234,7 @@ function parseCSV(text){
   return text.trim().split('\n')
     .filter(l => l && !l.startsWith('timestamp'))
     .map(l => l.split(','))
-    .filter(r => r.length >= 16 && !isNaN(new Date(r[0]).getTime()))
+    .filter(r => r.length >= MIN_CSV_COLS && !isNaN(new Date(r[0]).getTime()))
     .sort((a,b) => new Date(a[0]) - new Date(b[0]));
 }
 
@@ -645,7 +646,7 @@ function renderGlobal(){
 function updateTimestamp(src){
   document.getElementById('lastUpdated').textContent =
     'Last checked: ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
-    + ' · ' + src + ' · Auto-refreshes every 5 min';
+    + ' · ' + src + ' · Checks run hourly';
 }
 
 async function fetchStatusJSON(){
@@ -660,11 +661,31 @@ async function fetchStatusJSON(){
   } catch(e){ console.warn('status.json unavailable', e.message); }
 }
 
+function recentMonthKeys(n){
+  const now = new Date();
+  const keys = [];
+  for(let i = 0; i < n; i++){
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    keys.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}`);
+  }
+  return keys;
+}
+
 async function fetchHistoryCSV(){
   try{
-    const res = await fetch('data/history.csv?_=' + Date.now(), {cache:'no-cache'});
-    if(!res.ok) return;
-    allRows = parseCSV(await res.text());
+    // The live file holds only the most recent rows; monthly archives extend the
+    // window so 30/90-day figures reflect real data instead of the last ~500 rows.
+    const sources = ['data/history.csv', ...recentMonthKeys(4).map(m => `data/history-archive-${m}.csv`)];
+    const texts = await Promise.all(sources.map(async src => {
+      try{
+        const res = await fetch(src + '?_=' + Date.now(), {cache:'no-cache'});
+        return res.ok ? await res.text() : '';
+      } catch(e){ return ''; }
+    }));
+
+    const byTs = new Map();
+    texts.forEach(t => { if(t) parseCSV(t).forEach(r => byTs.set(r[0], r)); });
+    allRows = [...byTs.values()].sort((a,b) => new Date(a[0]) - new Date(b[0]));
     if(!allRows.length) return;
 
     for(const [id,colIdx] of Object.entries(CSV_COLS)){
@@ -680,7 +701,7 @@ async function fetchHistoryCSV(){
       };
       barHistory[id] = buildBarHistory(allRows,colIdx);
     }
-  } catch(e){ console.warn('history.csv unavailable', e.message); }
+  } catch(e){ console.warn('history unavailable', e.message); }
 }
 
 async function fetchIncidents(){

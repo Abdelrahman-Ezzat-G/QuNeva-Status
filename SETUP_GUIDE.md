@@ -99,7 +99,7 @@ Click **Save**.
 Go to: https://github.com/Abdelrahman-Ezzat-G/quneva-status/actions
 
 You should see two workflows:
-- **Uptime Monitor** — runs every 5 minutes
+- **Uptime Monitor** — runs every hour
 - **Deploy Status Page** — deploys on every push
 
 Click **Uptime Monitor** → **Run workflow** → **Run workflow** (green button).
@@ -113,7 +113,7 @@ Wait ~60 seconds, then click **Deploy Status Page** → **Run workflow**.
 After DNS propagates (5 min to 24 hours):
 
 1. Open: https://status.quneva.com
-2. Should show QuNeva branding with three services
+2. Should show QuNeva branding with four services
 3. Check: https://github.com/Abdelrahman-Ezzat-G/quneva-status/actions — both workflows green ✅
 4. Check: `data/status.json` exists in the repo (created by first uptime run)
 
@@ -139,7 +139,7 @@ After DNS propagates (5 min to 24 hours):
 - The page checks URLs directly from the browser using `fetch()` with `no-cors` mode
 - Because of CORS, the browser can't read the HTTP status code — it assumes UP if no network error occurs
 - The GitHub Actions workflow (server-side curl) is the authoritative uptime source
-- `data/status.json` is updated every 5 minutes with accurate results
+- `data/status.json` is updated every hour with accurate results
 
 ### Workflow runs but data/ files not created
 - Check that workflow permissions allow writing (Step 2)
@@ -151,12 +151,13 @@ After DNS propagates (5 min to 24 hours):
 ## Maintenance
 
 ### Changing check interval
-Edit `.github/workflows/uptime.yml`, line 4:
+Edit the `cron` line under `schedule` in `.github/workflows/uptime.yml`:
 ```yaml
-cron: "*/5 * * * *"   # every 5 minutes
+cron: "0 * * * *"     # every hour (current default)
 cron: "*/15 * * * *"  # every 15 minutes
-cron: "0 * * * *"     # every hour
+cron: "*/5 * * * *"   # every 5 minutes
 ```
+> Note: each run commits to `main`, so shorter intervals mean many more commits.
 
 ### Adding a new monitored service
 1. Add a new step in `uptime.yml` (copy an existing check step)
@@ -166,7 +167,7 @@ cron: "0 * * * *"     # every hour
 ### Viewing uptime history
 Raw history is in `data/history.csv` — open it in Excel or Google Sheets.
 
-Format: `timestamp, website_result, website_http, website_time, root_result, root_http, root_time, login_result, login_http, login_time`
+Format: `timestamp, website_result, website_http, website_time, ha_result, ha_http, ha_time, ai_result, ai_http, ai_time, root_result, root_http, root_time`
 
 ---
 

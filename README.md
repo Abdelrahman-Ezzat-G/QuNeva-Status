@@ -14,17 +14,18 @@ Public status page for [QuNeva WFM](https://www.quneva.com) — Enterprise Workf
 | Service | URL |
 |---------|-----|
 | QuNeva Website | https://www.quneva.com |
+| QuNeva HA | https://ha.quneva.com |
+| QuNeva AI | https://ai.quneva.com |
 | QuNeva Root Domain | https://quneva.com |
-| QuNeva Login | https://www.quneva.com/login |
 
 ---
 
 ## How It Works
 
-- **GitHub Actions** runs uptime checks every 5 minutes (`uptime.yml`)
-- Results are saved to `data/status.json` and `data/history.csv`
+- **GitHub Actions** runs uptime checks every hour (`uptime.yml`)
+- Results are saved to `data/status.json`, `data/history.csv`, and monthly `data/history-archive-YYYY-MM.csv`
 - **GitHub Pages** hosts the status page (`index.html`)
-- Incidents are automatically created as GitHub Issues when downtime is detected
+- Incidents are automatically created as GitHub Issues when downtime is detected, and exported to `data/incidents.json`
 - The status page fetches live results directly from the monitored URLs
 
 ---
@@ -39,10 +40,12 @@ quneva-status/
 ├── SETUP_GUIDE.md                ← Developer setup guide
 ├── data/
 │   ├── status.json               ← Latest check results (auto-updated)
-│   └── history.csv               ← Full history log (auto-updated)
+│   ├── history.csv               ← Rolling recent history, last 500 rows (auto-updated)
+│   ├── history-archive-*.csv     ← Permanent monthly archive (append-only)
+│   └── incidents.json            ← Recent incidents, last 30 days (auto-updated)
 └── .github/
     └── workflows/
-        ├── uptime.yml            ← Uptime monitor (every 5 min)
+        ├── uptime.yml            ← Uptime monitor (hourly)
         └── deploy.yml            ← GitHub Pages deployment
 ```
 

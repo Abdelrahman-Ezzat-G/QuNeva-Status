@@ -289,6 +289,35 @@ jobs:
             fs.writeFileSync('data/incidents.json', JSON.stringify(all, null, 2) + '\n');
             console.log(`Wrote ${all.length} incidents to data/incidents.json`);
 
+            // Atom feed so users can subscribe to incident updates.
+            // Built line-by-line (not a multiline template) to keep the XML free
+            // of the YAML block indentation.
+            const esc = s => String(s ?? '').replace(/[&<>"']/g, c => (
+              { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;' }[c]));
+            const site = 'https://status.quneva.com';
+            const updated = (all[0] && (all[0].closed_at || all[0].created_at)) || new Date().toISOString();
+            const L = [];
+            L.push('<?xml version="1.0" encoding="utf-8"?>');
+            L.push('<feed xmlns="http://www.w3.org/2005/Atom">');
+            L.push('  <title>QuNeva Status — Incidents</title>');
+            L.push('  <link href="' + site + '/data/incidents.xml" rel="self"/>');
+            L.push('  <link href="' + site + '"/>');
+            L.push('  <id>' + site + '/</id>');
+            L.push('  <updated>' + new Date(updated).toISOString() + '</updated>');
+            for (const i of all) {
+              L.push('  <entry>');
+              L.push('    <title>' + esc(i.title) + '</title>');
+              L.push('    <link href="' + esc(i.html_url) + '"/>');
+              L.push('    <id>' + esc(i.html_url) + '</id>');
+              L.push('    <updated>' + new Date(i.closed_at || i.created_at).toISOString() + '</updated>');
+              L.push('    <published>' + new Date(i.created_at).toISOString() + '</published>');
+              L.push('    <summary>' + (i.state === 'open' ? 'Ongoing incident' : 'Resolved incident') + '</summary>');
+              L.push('  </entry>');
+            }
+            L.push('</feed>');
+            fs.writeFileSync('data/incidents.xml', L.join('\n') + '\n');
+            console.log(`Wrote Atom feed with ${all.length} entries to data/incidents.xml`);
+
       - name: Commit status data
         run: |
           git config user.name "QuNeva Status Bot"

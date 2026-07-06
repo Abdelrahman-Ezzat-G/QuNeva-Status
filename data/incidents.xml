@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>QuNeva Status — Incidents</title>
+  <link href="https://status.quneva.com/data/incidents.xml" rel="self"/>
+  <link href="https://status.quneva.com"/>
+  <id>https://status.quneva.com/</id>
+  <updated>2026-07-06T18:31:04Z</updated>
+
+</feed>

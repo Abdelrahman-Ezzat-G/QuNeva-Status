@@ -11,7 +11,8 @@ permissions:
 
 concurrency:
   group: uptime-monitor
-  cancel-in-progress: true
+  # Don't cancel an in-flight monitor run — every scheduled check should complete.
+  cancel-in-progress: false
 
 jobs:
   check-uptime:
@@ -25,17 +26,12 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Sync latest main
-        run: |
-          git fetch origin main
-          git reset --hard origin/main
-
       - name: Check Abdelrahman Portfolio
         id: abdelrahman
         continue-on-error: true
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://www.abdelrahman-ezzat.com) || STATUS=0
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://www.abdelrahman-ezzat.com) || TIME=0
+          OUT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" --max-time 15 --retry 2 --retry-delay 2 --location https://www.abdelrahman-ezzat.com) || OUT="0 0"
+          STATUS="${OUT%% *}"; TIME="${OUT##* }"
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "Portfolio: HTTP $STATUS in ${TIME}s"
@@ -45,8 +41,8 @@ jobs:
         id: website
         continue-on-error: true
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://www.quneva.com) || STATUS=0
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://www.quneva.com) || TIME=0
+          OUT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" --max-time 15 --retry 2 --retry-delay 2 --location https://www.quneva.com) || OUT="0 0"
+          STATUS="${OUT%% *}"; TIME="${OUT##* }"
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "Website: HTTP $STATUS in ${TIME}s"
@@ -56,8 +52,8 @@ jobs:
         id: ha
         continue-on-error: true
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://ha.quneva.com) || STATUS=0
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://ha.quneva.com) || TIME=0
+          OUT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" --max-time 15 --retry 2 --retry-delay 2 --location https://ha.quneva.com) || OUT="0 0"
+          STATUS="${OUT%% *}"; TIME="${OUT##* }"
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "HA: HTTP $STATUS in ${TIME}s"
@@ -67,8 +63,8 @@ jobs:
         id: ai
         continue-on-error: true
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://ai.quneva.com) || STATUS=0
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://ai.quneva.com) || TIME=0
+          OUT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" --max-time 15 --retry 2 --retry-delay 2 --location https://ai.quneva.com) || OUT="0 0"
+          STATUS="${OUT%% *}"; TIME="${OUT##* }"
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "AI: HTTP $STATUS in ${TIME}s"
@@ -78,8 +74,8 @@ jobs:
         id: root
         continue-on-error: true
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://quneva.com) || STATUS=0
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://quneva.com) || TIME=0
+          OUT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" --max-time 15 --retry 2 --retry-delay 2 --location https://quneva.com) || OUT="0 0"
+          STATUS="${OUT%% *}"; TIME="${OUT##* }"
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "Root domain: HTTP $STATUS in ${TIME}s"

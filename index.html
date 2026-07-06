@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0a0e1a" />
 <title>QuNeva Status</title>
 <meta name="description" content="Real-time uptime and availability monitoring for QuNeva Workforce Management Platform." />
 <meta property="og:title" content="QuNeva Status" />
@@ -167,24 +168,24 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 
 <div class="section">
   <div class="section-header">
-    <div class="section-title">Services</div>
+    <h2 class="section-title">Services</h2>
     <div class="section-hint">Hover bars for details · 6h per bar · 10 days</div>
   </div>
   <div class="services-grid" id="servicesGrid"></div>
 </div>
 
 <div class="section">
-  <div class="section-title" style="margin-bottom:14px">Uptime Summary</div>
+  <h2 class="section-title" style="margin-bottom:14px">Uptime Summary</h2>
   <div class="uptime-card" id="uptimeCard"></div>
 </div>
 
 <div class="section">
-  <div class="section-title" style="margin-bottom:14px">Response Times</div>
+  <h2 class="section-title" style="margin-bottom:14px">Response Times</h2>
   <div class="metrics-grid" id="metricsGrid"></div>
 </div>
 
 <div class="section">
-  <div class="section-title" style="margin-bottom:14px">Recent Incidents</div>
+  <h2 class="section-title" style="margin-bottom:14px">Recent Incidents</h2>
   <div class="incidents-card" id="incidentsCard">
     <div class="no-incidents"><div class="no-incidents-icon">⏳</div><div>Loading incident history...</div></div>
   </div>
@@ -210,7 +211,6 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 const BAR_COUNT = 40;
 const BAR_WINDOW_MS = 6 * 60 * 60 * 1000;
 const GOOD_LIMIT_MS = 800;
-const SLOW_LIMIT_MS = 1500;
 
 const SERVICES = [
   { id:'abdelrahman', name:'Abdelrahman Ezzat', url:'https://www.abdelrahman-ezzat.com', icon:'👤', iconClass:'icon-dev' },
@@ -225,6 +225,7 @@ const CSV_COLS = { abdelrahman:1, website:4, ha:7, ai:10, root:13 };
 const MIN_CSV_COLS = 16;
 
 const authoritative = {};
+const csvLatest = {};      // current status derived from the newest CSV row (fallback if status.json fails)
 const uptimePct = {};
 const qualityPct = {};
 const barHistory = {};
@@ -243,8 +244,9 @@ function classifyCheck(row,colIdx){
   const sec = parseFloat(row[colIdx + 2]);
   const ms = !isNaN(sec) && sec > 0 ? Math.round(sec * 1000) : null;
 
+  // 'down' means unreachable only — latency never counts against uptime.
+  // Slowness is reflected in the quality score, bar colour and bar height.
   if(result === 'down') return { type:'down', ms };
-  if(ms !== null && ms >= SLOW_LIMIT_MS) return { type:'down', ms };
   if(ms !== null && ms >= GOOD_LIMIT_MS) return { type:'slow', ms };
   return { type:'good', ms };
 }
@@ -403,6 +405,8 @@ function positionTooltip(e){
   tooltip.style.top = y + 'px';
 }
 document.addEventListener('mousemove',e => { if(tooltip.classList.contains('visible')) positionTooltip(e); });
+// Tapping anywhere that isn't a bar dismisses the tooltip (touch devices).
+document.addEventListener('touchstart', hideTooltip);
 function hideTooltip(){ tooltip.classList.remove('visible'); }
 
 function renderBars(svcId){
@@ -443,6 +447,12 @@ function attachBarEvents(){
       if(bar) showTooltip(e,bar);
     });
     el.addEventListener('mouseleave', hideTooltip);
+    el.addEventListener('touchstart', e => {
+      e.stopPropagation();   // keep the document handler from immediately hiding it
+      const bar = barHistory[svcId]?.[idx];
+      const t = e.touches[0];
+      if(bar && t) showTooltip({clientX:t.clientX, clientY:t.clientY}, bar);
+    }, {passive:true});
   });
 }
 
@@ -504,6 +514,7 @@ function renderGrid(){
 
   grid.innerHTML = SERVICES.map(svc => {
     const auth = authoritative[svc.id];
+    const fallback = csvLatest[svc.id];
 
     let isUp, isChecking, displayMs, sourceLabel;
     if(auth){
@@ -511,6 +522,11 @@ function renderGrid(){
       isChecking = false;
       displayMs = Math.round(auth.response_time_s * 1000);
       sourceLabel = `<span class="data-source source-live">⚡ Live via Actions</span>`;
+    } else if(fallback){
+      isUp = fallback.status === 'up';
+      isChecking = false;
+      displayMs = Math.round(fallback.response_time_s * 1000);
+      sourceLabel = `<span class="data-source source-live">📄 Latest record</span>`;
     } else {
       isUp = true; isChecking = true; displayMs = null; sourceLabel = '';
     }
@@ -596,7 +612,7 @@ function renderUptime(){
 
 function renderMetrics(){
   const allMs = SERVICES.map(s => {
-    const a = authoritative[s.id];
+    const a = authoritative[s.id] || csvLatest[s.id];
     return a ? Math.round(a.response_time_s * 1000) : null;
   }).filter(Boolean);
 
@@ -622,10 +638,10 @@ function renderMetrics(){
 function renderGlobal(){
   const badge = document.getElementById('globalBadge');
   const text = document.getElementById('globalStatus');
-  const hasAuth = Object.keys(authoritative).length > 0;
-  const anyDown = Object.values(authoritative).some(r => r.status === 'down');
+  const current = SERVICES.map(s => authoritative[s.id] || csvLatest[s.id]).filter(Boolean);
+  const anyDown = current.some(r => r.status === 'down');
 
-  if(!hasAuth){
+  if(!current.length){
     badge.className = 'hero-badge badge-degraded';
     text.textContent = 'Loading status data…';
   } else if(anyDown){
@@ -704,6 +720,7 @@ async function fetchHistoryCSV(){
     allRows = [...byTs.values()].sort((a,b) => new Date(a[0]) - new Date(b[0]));
     if(!allRows.length) return;
 
+    const lastRow = allRows[allRows.length - 1];
     for(const [id,colIdx] of Object.entries(CSV_COLS)){
       uptimePct[id] = {
         d7: calcUptimePeriod(allRows,colIdx,7),
@@ -716,6 +733,15 @@ async function fetchHistoryCSV(){
         d90: calcQualityPeriod(allRows,colIdx,90),
       };
       barHistory[id] = buildBarHistory(allRows,colIdx);
+
+      const result = lastRow[colIdx]?.trim();
+      if(result){
+        const sec = parseFloat(lastRow[colIdx + 2]);
+        csvLatest[id] = {
+          status: result === 'down' ? 'down' : 'up',
+          response_time_s: isNaN(sec) ? 0 : sec,
+        };
+      }
     }
   } catch(e){ console.warn('history unavailable', e.message); }
 }

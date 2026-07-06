@@ -34,17 +34,17 @@ Public status page for [QuNeva WFM](https://www.quneva.com) — Enterprise Workf
 
 ## Email Alerts (optional)
 
-The monitor emails you when a new incident opens and when everything recovers. It's off until you add SMTP credentials as repository secrets (**Settings → Secrets and variables → Actions**):
+The monitor emails you when a new incident opens and when everything recovers. Alerts fire only on **state changes** (new outage / full recovery), never every hour, and the step is skipped harmlessly if no provider is configured.
+
+**Recommended — [Resend](https://resend.com):** add these repository secrets (**Settings → Secrets and variables → Actions**):
 
 | Secret | Required | Default | Notes |
 |--------|----------|---------|-------|
-| `MAIL_USERNAME` | ✅ | — | SMTP login / from-address (e.g. your Outlook address) |
-| `MAIL_PASSWORD` | ✅ | — | SMTP password or **app password** |
+| `RESEND_API_KEY` | ✅ | — | API key from the Resend dashboard |
+| `MAIL_FROM` | — | `QuNeva Status <status@abdelrahman-ezzat.com>` | Must be a **verified domain** in Resend |
 | `MAIL_TO` | — | `abdelrahman-ezzat@outlook.com` | Where alerts are delivered |
-| `SMTP_HOST` | — | `smtp-mail.outlook.com` | SMTP server |
-| `SMTP_PORT` | — | `587` | SMTP port (STARTTLS) |
 
-If `MAIL_USERNAME` / `MAIL_PASSWORD` are absent the email step is skipped harmlessly. Alerts fire only on **state changes** (new outage / full recovery), never every hour.
+**Fallback — plain SMTP:** if you prefer SMTP instead of Resend, set `MAIL_USERNAME` + `MAIL_PASSWORD` (and optionally `SMTP_HOST` / `SMTP_PORT`, defaulting to `smtp-mail.outlook.com:587`). Resend is tried first when `RESEND_API_KEY` is present, otherwise SMTP is used.
 
 ---
 

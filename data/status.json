@@ -2,6 +2,13 @@
   "timestamp": "2026-07-06T18:31:04Z",
   "date": "2026-07-06",
   "services": {
+    "abdelrahman": {
+      "name": "Abdelrahman Portfolio",
+      "url": "https://www.abdelrahman-ezzat.com",
+      "status": "up",
+      "http_status": 200,
+      "response_time_s": 0.072912
+    },
     "website": {
       "name": "QuNeva Website",
       "url": "https://www.quneva.com",

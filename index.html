@@ -3,11 +3,20 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0a0e1a" />
 <title>QuNeva Status</title>
 <meta name="description" content="Real-time uptime and availability monitoring for QuNeva Workforce Management Platform." />
+<link rel="canonical" href="https://status.quneva.com/" />
 <meta property="og:title" content="QuNeva Status" />
 <meta property="og:description" content="Live uptime monitoring for QuNeva WFM services." />
 <meta property="og:url" content="https://status.quneva.com" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://status.quneva.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://status.quneva.com/og.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="alternate" type="application/atom+xml" title="QuNeva Status — incidents" href="/data/incidents.xml" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='10' y1='10' x2='54' y2='54' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%239F7AEA'/%3E%3Cstop offset='1' stop-color='%2367E8F9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z' stroke='url(%23g)' stroke-width='5.5' fill='none'/%3E%3Cpath d='M40.8 40.5L52 52' stroke='url(%23g)' stroke-width='5.5' stroke-linecap='round'/%3E%3Cpath d='M22 41V22l20 19V22' stroke='url(%23g)' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E" />
 <style>
 :root{
@@ -37,6 +46,7 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .pulse,.dot-sm{border-radius:50%;background:currentColor;animation:pulse 2s infinite}
 .pulse{width:8px;height:8px}.dot-sm{width:6px;height:6px}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.pulse,.dot-sm{animation:none}*{transition:none!important}}
 .hero h1{font-size:2.1rem;font-weight:700;margin-bottom:10px}
 .hero p{font-size:.97rem;color:var(--muted);max-width:440px;margin:0 auto;line-height:1.65}
 .last-updated{font-size:11.5px;color:var(--muted);margin-top:12px;opacity:.65}
@@ -106,6 +116,20 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .uptime-name{font-size:13px;min-width:160px}.uptime-periods{display:flex;gap:20px;align-items:center;flex:1;justify-content:flex-end}
 .uptime-period{text-align:center;min-width:64px}.uptime-period-label{font-size:9.5px;color:var(--muted);text-transform:uppercase}.uptime-period-val{font-size:13px;font-weight:600}
 
+.maint-banner{background:var(--yellow-bg);border:1px solid rgba(245,158,11,.28);border-left:3px solid var(--yellow);border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+.maint-head{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:.06em}
+.maint-item{display:flex;gap:11px;align-items:flex-start}.maint-item:not(:last-child){padding-bottom:10px;border-bottom:1px solid rgba(245,158,11,.15)}
+.maint-icon{font-size:15px;flex-shrink:0}.maint-body{flex:1;min-width:0}
+.maint-title{font-size:13px;font-weight:600;color:var(--text)}.maint-title a{color:var(--text)}
+.maint-desc{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+.maint-time{font-size:11px;color:var(--muted);margin-top:3px}
+
+.trend-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 18px 12px}
+.trend-svg{width:100%;height:auto;display:block;overflow:visible}
+.trend-empty{text-align:center;color:var(--muted);font-size:13px;padding:24px}
+.trend-axis{fill:var(--muted);font-size:10px}
+.trend-legend{display:flex;justify-content:space-between;margin-top:8px;font-size:10.5px;color:var(--muted)}
+
 .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px}
 .metric-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:15px 17px}
 .metric-label{font-size:10.5px;color:var(--muted);margin-bottom:5px;text-transform:uppercase}.metric-value{font-size:1.55rem;font-weight:700}.metric-sub{font-size:10.5px;color:var(--muted);margin-top:2px}
@@ -125,6 +149,13 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 </head>
 
 <body>
+<noscript>
+  <div style="max-width:920px;margin:0 auto;padding:20px 24px;text-align:center;color:#8a92b2;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif">
+    This status page needs JavaScript to show live data. You can still read the latest results in
+    <a href="data/status.json" style="color:#a78bfa">status.json</a> or on the
+    <a href="https://github.com/Abdelrahman-Ezzat-G/quneva-status" style="color:#a78bfa">repository</a>.
+  </div>
+</noscript>
 <div id="barTooltip" class="bar-tooltip">
   <div class="tt-date" id="ttDate"></div>
   <div class="tt-status" id="ttStatus"></div>
@@ -157,34 +188,49 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 </nav>
 
 <div class="hero">
-  <div class="hero-badge badge-degraded" id="globalBadge"><span class="pulse"></span><span id="globalStatus">Loading status data…</span></div>
+  <div class="hero-badge badge-degraded" id="globalBadge" role="status" aria-live="polite"><span class="pulse"></span><span id="globalStatus">Loading status data…</span></div>
   <h1>QuNeva System Status</h1>
   <p>Real-time uptime and availability monitoring for the QuNeva Workforce Management Platform.</p>
   <div class="last-updated" id="lastUpdated">Loading latest check…</div>
+</div>
+
+<div class="section" id="maintenanceSection" style="display:none">
+  <div id="maintenanceBanner"></div>
 </div>
 
 <div class="section"><div class="sla-strip" id="slaStrip"></div></div>
 
 <div class="section">
   <div class="section-header">
-    <div class="section-title">Services</div>
+    <h2 class="section-title">Services</h2>
     <div class="section-hint">Hover bars for details · 6h per bar · 10 days</div>
   </div>
   <div class="services-grid" id="servicesGrid"></div>
 </div>
 
 <div class="section">
-  <div class="section-title" style="margin-bottom:14px">Uptime Summary</div>
+  <h2 class="section-title" style="margin-bottom:14px">Uptime Summary</h2>
   <div class="uptime-card" id="uptimeCard"></div>
 </div>
 
 <div class="section">
-  <div class="section-title" style="margin-bottom:14px">Response Times</div>
+  <h2 class="section-title" style="margin-bottom:14px">Response Times</h2>
   <div class="metrics-grid" id="metricsGrid"></div>
 </div>
 
 <div class="section">
-  <div class="section-title" style="margin-bottom:14px">Recent Incidents</div>
+  <div class="section-header">
+    <h2 class="section-title">Response Time Trend</h2>
+    <div class="section-hint">Avg across all services · 6h buckets · 10 days</div>
+  </div>
+  <div class="trend-card" id="trendCard"></div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <h2 class="section-title">Recent Incidents</h2>
+    <a class="section-hint" href="data/incidents.xml" target="_blank" rel="noopener" style="text-decoration:none">🔔 Subscribe (RSS)</a>
+  </div>
   <div class="incidents-card" id="incidentsCard">
     <div class="no-incidents"><div class="no-incidents-icon">⏳</div><div>Loading incident history...</div></div>
   </div>
@@ -210,7 +256,6 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 const BAR_COUNT = 40;
 const BAR_WINDOW_MS = 6 * 60 * 60 * 1000;
 const GOOD_LIMIT_MS = 800;
-const SLOW_LIMIT_MS = 1500;
 
 const SERVICES = [
   { id:'abdelrahman', name:'Abdelrahman Ezzat', url:'https://www.abdelrahman-ezzat.com', icon:'👤', iconClass:'icon-dev' },
@@ -225,6 +270,7 @@ const CSV_COLS = { abdelrahman:1, website:4, ha:7, ai:10, root:13 };
 const MIN_CSV_COLS = 16;
 
 const authoritative = {};
+const csvLatest = {};      // current status derived from the newest CSV row (fallback if status.json fails)
 const uptimePct = {};
 const qualityPct = {};
 const barHistory = {};
@@ -243,8 +289,9 @@ function classifyCheck(row,colIdx){
   const sec = parseFloat(row[colIdx + 2]);
   const ms = !isNaN(sec) && sec > 0 ? Math.round(sec * 1000) : null;
 
+  // 'down' means unreachable only — latency never counts against uptime.
+  // Slowness is reflected in the quality score, bar colour and bar height.
   if(result === 'down') return { type:'down', ms };
-  if(ms !== null && ms >= SLOW_LIMIT_MS) return { type:'down', ms };
   if(ms !== null && ms >= GOOD_LIMIT_MS) return { type:'slow', ms };
   return { type:'good', ms };
 }
@@ -403,6 +450,8 @@ function positionTooltip(e){
   tooltip.style.top = y + 'px';
 }
 document.addEventListener('mousemove',e => { if(tooltip.classList.contains('visible')) positionTooltip(e); });
+// Tapping anywhere that isn't a bar dismisses the tooltip (touch devices).
+document.addEventListener('touchstart', hideTooltip);
 function hideTooltip(){ tooltip.classList.remove('visible'); }
 
 function renderBars(svcId){
@@ -443,6 +492,12 @@ function attachBarEvents(){
       if(bar) showTooltip(e,bar);
     });
     el.addEventListener('mouseleave', hideTooltip);
+    el.addEventListener('touchstart', e => {
+      e.stopPropagation();   // keep the document handler from immediately hiding it
+      const bar = barHistory[svcId]?.[idx];
+      const t = e.touches[0];
+      if(bar && t) showTooltip({clientX:t.clientX, clientY:t.clientY}, bar);
+    }, {passive:true});
   });
 }
 
@@ -504,6 +559,7 @@ function renderGrid(){
 
   grid.innerHTML = SERVICES.map(svc => {
     const auth = authoritative[svc.id];
+    const fallback = csvLatest[svc.id];
 
     let isUp, isChecking, displayMs, sourceLabel;
     if(auth){
@@ -511,6 +567,11 @@ function renderGrid(){
       isChecking = false;
       displayMs = Math.round(auth.response_time_s * 1000);
       sourceLabel = `<span class="data-source source-live">⚡ Live via Actions</span>`;
+    } else if(fallback){
+      isUp = fallback.status === 'up';
+      isChecking = false;
+      displayMs = Math.round(fallback.response_time_s * 1000);
+      sourceLabel = `<span class="data-source source-live">📄 Latest record</span>`;
     } else {
       isUp = true; isChecking = true; displayMs = null; sourceLabel = '';
     }
@@ -596,7 +657,7 @@ function renderUptime(){
 
 function renderMetrics(){
   const allMs = SERVICES.map(s => {
-    const a = authoritative[s.id];
+    const a = authoritative[s.id] || csvLatest[s.id];
     return a ? Math.round(a.response_time_s * 1000) : null;
   }).filter(Boolean);
 
@@ -622,10 +683,10 @@ function renderMetrics(){
 function renderGlobal(){
   const badge = document.getElementById('globalBadge');
   const text = document.getElementById('globalStatus');
-  const hasAuth = Object.keys(authoritative).length > 0;
-  const anyDown = Object.values(authoritative).some(r => r.status === 'down');
+  const current = SERVICES.map(s => authoritative[s.id] || csvLatest[s.id]).filter(Boolean);
+  const anyDown = current.some(r => r.status === 'down');
 
-  if(!hasAuth){
+  if(!current.length){
     badge.className = 'hero-badge badge-degraded';
     text.textContent = 'Loading status data…';
   } else if(anyDown){
@@ -704,6 +765,7 @@ async function fetchHistoryCSV(){
     allRows = [...byTs.values()].sort((a,b) => new Date(a[0]) - new Date(b[0]));
     if(!allRows.length) return;
 
+    const lastRow = allRows[allRows.length - 1];
     for(const [id,colIdx] of Object.entries(CSV_COLS)){
       uptimePct[id] = {
         d7: calcUptimePeriod(allRows,colIdx,7),
@@ -716,6 +778,15 @@ async function fetchHistoryCSV(){
         d90: calcQualityPeriod(allRows,colIdx,90),
       };
       barHistory[id] = buildBarHistory(allRows,colIdx);
+
+      const result = lastRow[colIdx]?.trim();
+      if(result){
+        const sec = parseFloat(lastRow[colIdx + 2]);
+        csvLatest[id] = {
+          status: result === 'down' ? 'down' : 'up',
+          response_time_s: isNaN(sec) ? 0 : sec,
+        };
+      }
     }
   } catch(e){ console.warn('history unavailable', e.message); }
 }
@@ -756,9 +827,85 @@ async function fetchIncidents(){
   }
 }
 
+async function fetchMaintenance(){
+  const section = document.getElementById('maintenanceSection');
+  const banner = document.getElementById('maintenanceBanner');
+  try{
+    const res = await fetch('data/maintenance.json?_=' + Date.now(), {cache:'no-cache'});
+    if(!res.ok) throw new Error('maintenance.json unavailable');
+    const items = await res.json();
+    if(!Array.isArray(items) || !items.length){ section.style.display = 'none'; return; }
+
+    banner.innerHTML = `<div class="maint-banner">
+      <div class="maint-head"><span aria-hidden="true">🛠️</span> Scheduled Maintenance</div>
+      ${items.map(m => {
+        const when = new Date(m.created_at);
+        const dateStr = when.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) + ' ' + when.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+        const title = escapeHtml(m.title || 'Maintenance');
+        const url = safeUrl(m.html_url);
+        const desc = m.body ? `<div class="maint-desc">${escapeHtml(m.body)}</div>` : '';
+        return `<div class="maint-item">
+          <div class="maint-icon" aria-hidden="true">🗓️</div>
+          <div class="maint-body">
+            <div class="maint-title"><a href="${url}" target="_blank" rel="noopener">${title}</a></div>
+            ${desc}
+            <div class="maint-time">Posted ${dateStr}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+    section.style.display = '';
+  } catch(e){ section.style.display = 'none'; }
+}
+
+function renderTrend(){
+  const card = document.getElementById('trendCard');
+  const svcIds = SERVICES.map(s => s.id).filter(id => barHistory[id]);
+  const n = BAR_COUNT;
+  const pts = [];
+  for(let i = 0; i < n; i++){
+    const vals = [];
+    svcIds.forEach(id => { const b = barHistory[id][i]; if(b && b.avgMs != null) vals.push(b.avgMs); });
+    const avg = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0) / vals.length) : null;
+    const ref = svcIds.map(id => barHistory[id][i]).find(Boolean);
+    pts.push({ i, avg, winStart: ref?.winStart });
+  }
+  const real = pts.filter(p => p.avg != null);
+  if(real.length < 2){ card.innerHTML = `<div class="trend-empty">Not enough data yet to plot a trend.</div>`; return; }
+
+  const W = 1000, H = 200, padL = 46, padR = 12, padT = 14, padB = 20;
+  const maxV = Math.max(...real.map(p => p.avg));
+  const niceMax = Math.max(100, Math.ceil(maxV / 50) * 50);
+  const x = i => padL + (i / (n - 1)) * (W - padL - padR);
+  const y = v => padT + (1 - v / niceMax) * (H - padT - padB);
+
+  let d = '', started = false;
+  pts.forEach(p => {
+    if(p.avg == null){ started = false; return; }
+    d += (started ? ' L' : ' M') + x(p.i).toFixed(1) + ' ' + y(p.avg).toFixed(1);
+    started = true;
+  });
+  const areaPts = real.map(p => `${x(p.i).toFixed(1)},${y(p.avg).toFixed(1)}`).join(' ');
+  const area = `${x(real[0].i).toFixed(1)},${y(0).toFixed(1)} ${areaPts} ${x(real[real.length-1].i).toFixed(1)},${y(0).toFixed(1)}`;
+
+  const grid = [0, niceMax/2, niceMax].map(v =>
+    `<line x1="${padL}" y1="${y(v).toFixed(1)}" x2="${W-padR}" y2="${y(v).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>` +
+    `<text class="trend-axis" x="${padL-8}" y="${(y(v)+3).toFixed(1)}" text-anchor="end">${Math.round(v)}ms</text>`
+  ).join('');
+
+  const startLabel = real[0].winStart ? new Date(real[0].winStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) : '';
+  card.innerHTML = `<svg class="trend-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Average response time trend across all services over the last 10 days, peak ${maxV} ms">
+    <defs><linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity="0.28"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
+    <polygon points="${area}" fill="url(#trendFill)"/>
+    <path d="${d.trim()}" fill="none" stroke="var(--accent-2)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>
+  <div class="trend-legend"><span>${startLabel}</span><span>Now</span></div>`;
+}
+
 async function runAll(){
-  await Promise.all([fetchStatusJSON(), fetchHistoryCSV(), fetchIncidents()]);
-  renderGrid(); renderUptime(); renderMetrics(); renderGlobal(); renderSLA();
+  await Promise.all([fetchStatusJSON(), fetchHistoryCSV(), fetchIncidents(), fetchMaintenance()]);
+  renderGrid(); renderUptime(); renderMetrics(); renderGlobal(); renderSLA(); renderTrend();
 }
 
 runAll();

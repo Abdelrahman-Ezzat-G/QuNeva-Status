@@ -289,8 +289,13 @@ jobs:
               })
             ]);
 
+            // Issues labelled 'hidden' (or listed below) are kept out of the
+            // public page/feed — for checker noise like transient HTTP 0 blips.
+            const HIDDEN_ISSUES = [4];
             const all = [...open.data, ...closed.data]
               .filter(i => !i.pull_request)
+              .filter(i => !HIDDEN_ISSUES.includes(i.number))
+              .filter(i => !(i.labels || []).some(l => (l.name || l) === 'hidden'))
               .filter(i => new Date(i.created_at).getTime() >= cutoff)
               .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
               .map(i => ({

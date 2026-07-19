@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           ref: main
           # Shallow: only a small window of history is needed to rebase one new
@@ -152,7 +152,7 @@ jobs:
         if: |
           steps.website.outputs.result == 'down' ||
           steps.ai.outputs.result == 'down'
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           WEBSITE_RESULT: ${{ steps.website.outputs.result }}
           WEBSITE_HTTP: ${{ steps.website.outputs.status }}
@@ -197,7 +197,7 @@ jobs:
         if: |
           steps.website.outputs.result == 'up' &&
           steps.ai.outputs.result == 'up'
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -232,7 +232,7 @@ jobs:
         continue-on-error: true
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          MAIL_FROM: ${{ secrets.MAIL_FROM || 'QuNeva Status <status@abdelrahman-ezzat.com>' }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM || 'QuNeva Status <status@quneva.com>' }}
           MAIL_TO: ${{ secrets.MAIL_TO || 'abdelrahman-ezzat@outlook.com' }}
           SMTP_HOST: ${{ secrets.SMTP_HOST || 'smtp-mail.outlook.com' }}
           SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}
@@ -311,7 +311,7 @@ jobs:
 
       - name: Build incidents JSON
         continue-on-error: true
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -382,7 +382,7 @@ jobs:
 
       - name: Build maintenance JSON
         continue-on-error: true
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

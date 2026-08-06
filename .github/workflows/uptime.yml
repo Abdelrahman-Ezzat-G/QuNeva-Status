@@ -92,11 +92,13 @@ jobs:
           export WEBSITE_MS=$(awk "BEGIN{printf \"%d\", ($WEBSITE_TIME)*1000}")
           export AI_MS=$(awk "BEGIN{printf \"%d\", ($AI_TIME)*1000}")
           PAYLOAD=$(python3 -c "import os,json;print(json.dumps([{'service':'website','status':os.environ['WEBSITE_RESULT'],'http_code':int(os.environ.get('WEBSITE_HTTP') or 0),'response_ms':int(os.environ['WEBSITE_MS'])},{'service':'ai','status':os.environ['AI_RESULT'],'http_code':int(os.environ.get('AI_HTTP') or 0),'response_ms':int(os.environ['AI_MS'])}]))")
-          HTTP=$(curl -s -o /tmp/sb.json -w '%{http_code}' -X POST "$SUPABASE_URL/rest/v1/status_checks" \
+          HTTP=$(curl -s -o /tmp/sb.json -w '%{http_code}' \
+            --connect-timeout 10 --max-time 20 --retry 2 --retry-delay 2 \
+            -X POST "$SUPABASE_URL/rest/v1/status_checks" \
             -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
             -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
             -H "Content-Type: application/json" \
-            -d "$PAYLOAD")
+            -d "$PAYLOAD") || HTTP=000
           echo "Supabase insert HTTP $HTTP"
           case "$HTTP" in
             20*) echo "Recorded checks in Supabase" ;;

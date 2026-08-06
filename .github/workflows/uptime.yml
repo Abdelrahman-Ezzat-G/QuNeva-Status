@@ -27,6 +27,9 @@ jobs:
   check-uptime:
     name: Check Services
     runs-on: ubuntu-latest
+    # Hard ceiling so a hung step can never run for ~15 min and clog the
+    # concurrency queue again — a normal run finishes in well under a minute.
+    timeout-minutes: 5
 
     steps:
       - name: Checkout

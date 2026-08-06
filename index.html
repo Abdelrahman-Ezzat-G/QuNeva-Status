@@ -759,18 +759,31 @@ const SUPABASE_ANON = 'sb_publishable_FXaRTiQND3wmH9bEM2oJEA_E2EVopat';
 async function fetchSupabaseHistory(){
   try{
     const since = new Date(Date.now() - 92 * 86400000).toISOString();
-    const url = `${SUPABASE_URL}/rest/v1/status_checks`
-      + `?select=checked_at,service,status,http_code,response_ms`
-      + `&checked_at=gte.${since}&order=checked_at.asc&limit=100000`;
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000);
-    const res = await fetch(url, {
-      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON },
-      cache: 'no-cache', signal: ctrl.signal
-    }).finally(() => clearTimeout(timer));
-    if(!res.ok) return [];
-    const data = await res.json();
-    if(!Array.isArray(data)) return [];
+    // PostgREST silently caps every response at its max-rows setting (1000 by
+    // default) regardless of how large a limit is requested. A single ascending
+    // query therefore only ever returns the OLDEST 1000 rows, freezing the page
+    // at that point in history. Page through with limit+offset instead, stopping
+    // at the first short page.
+    const PAGE = 1000, MAX_PAGES = 12;
+    const data = [];
+    for(let p = 0; p < MAX_PAGES; p++){
+      const url = `${SUPABASE_URL}/rest/v1/status_checks`
+        + `?select=checked_at,service,status,http_code,response_ms`
+        + `&checked_at=gte.${since}&order=checked_at.asc`
+        + `&limit=${PAGE}&offset=${p * PAGE}`;
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 8000);
+      const res = await fetch(url, {
+        headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON },
+        cache: 'no-cache', signal: ctrl.signal
+      }).finally(() => clearTimeout(timer));
+      if(!res.ok) break;
+      const page = await res.json();
+      if(!Array.isArray(page)) break;
+      data.push(...page);
+      if(page.length < PAGE) break;
+    }
+    if(!data.length) return [];
     const byTs = new Map();  // group the two services of one check into one row
     for(const r of data){
       const base = r.service === 'website' ? 1 : r.service === 'ai' ? 4 : null;
